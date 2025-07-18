@@ -1,0 +1,8 @@
+== Homeassistant addon
+
+This is the shyft home-assistant addon. :-)
+
+
+=== Links
+
+* Writing first homeassistant  addon - https://developers.home-assistant.io/docs/add-ons/tutorial/

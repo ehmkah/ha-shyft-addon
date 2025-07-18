@@ -1,0 +1,22 @@
+name: "Shyft home-assistant addon"
+description: "This is the shyft homeassistant-addon. It allows you to configure your homeassistant to send data for optimization to shyft."
+version: "0.36.9.0"
+slug: "shyft_addon"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+url: https://www.shyft-power.com/
+options:
+  shyft_access_key: "notset"
+schema:
+  shyft_access_key: str
+ingress: true
+ingress_port: 8080
+panel_icon: mdi:gesture-tap-button
+startup: services
+boot: auto
+host_network: false
