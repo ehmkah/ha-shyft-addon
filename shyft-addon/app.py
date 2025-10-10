@@ -29,6 +29,10 @@ def trigger():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route("/config", methods=["GET"])
+def readConfig():
+    return jsonify({"ausjelesen": "ausgelesen"})
+
 if __name__ == "__main__":
     try:
         with open(OPTIONS_PATH, "r") as f:

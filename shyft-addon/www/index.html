@@ -15,10 +15,21 @@
 <div>Configure your shyft-User-token.If you click the button. Then a simple write operation to bubble is triggered.</div>
 <button onclick="trigger()">Send Request</button>
 
+<button onclick="showconfig()">Show Config</button>
+
 <script>
     function trigger() {
         fetch(window.location.pathname + "/trigger", {
             method: "POST"
+        })
+            .then(response => response.json())
+            .then(data => alert("Result: " + JSON.stringify(data)))
+            .catch(error => alert("Error: " + error));
+    }
+
+    function showconfig() {
+        fetch(window.location.pathname + "/config", {
+            method: "GET"
         })
             .then(response => response.json())
             .then(data => alert("Result: " + JSON.stringify(data)))
