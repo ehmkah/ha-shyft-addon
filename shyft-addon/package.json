@@ -1,0 +1,13 @@
+{
+  "name": "ha-shyft-addon",
+  "version": "0.0.1",
+  "description": "Simple mapping for shyft",
+  "type": "module",
+  "scripts": {
+    "start": "npx http-server ./src -o",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

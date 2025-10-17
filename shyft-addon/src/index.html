@@ -12,10 +12,21 @@
 </head>
 <body>
 <h1>shyft addon</h1>
-<div>Configure your shyft-User-token.If you click the button. Then a simple write operation to bubble is triggered.</div>
+<div>Configure your shyft-User-token.If you click the button. Then a simple write operation to bubble is triggered.
+</div>
 <button onclick="trigger()">Send Request</button>
 
-<button onclick="showconfig()">Show Config</button>
+<button id="showConfig">Show Config</button>
+
+<table id="dataTable">
+    <thead>
+    <tr>
+        <th>Shyft-Sensor</th>
+        <th>Homeassistant Entity ID</th>
+    </tr>
+    </thead>
+    <tbody id="mappingData"/>
+</table>
 
 <script>
     function trigger() {
@@ -23,18 +34,13 @@
             method: "POST"
         })
             .then(response => response.json())
-            .then(data => alert("Result: " + JSON.stringify(data)))
-            .catch(error => alert("Error: " + error));
-    }
-
-    function showconfig() {
-        fetch(window.location.pathname + "/config", {
-            method: "GET"
-        })
-            .then(response => response.json())
-            .then(data => alert("Result: " + JSON.stringify(data)))
+            .then(data => {
+                const resultDiv = document.getElementById('config');
+                resultDiv.textContent = JSON.stringify(data)
+            })
             .catch(error => alert("Error: " + error));
     }
 </script>
+<script type="module" src="./app.js"></script>
 </body>
 </html>

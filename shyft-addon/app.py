@@ -12,7 +12,7 @@ CONFIG_PATH = "/data/config.json"
 # Serve the static HTML
 @app.route("/")
 def index():
-    return send_from_directory("www", "index.html")
+    return send_from_directory("src", "index.html")
 
 # config
 #{

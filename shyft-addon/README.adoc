@@ -10,6 +10,14 @@ This is the shyft home-assistant addon. :-)
 * There is a link add add-on to home assistant
 * !Attention! - its not possible to install the add-on to a homeassistant which is running from the shell (e.g. because you developed your own integration)
 
+=== Development
+
+* install required node packages - `npm install`
+* run server `npm start`
+* Run local http server for testing config
+** `cd src/`
+** Start simple http server `npx http-server . -p 8000 --cors`
+
 === Links
 
 * Writing first homeassistant  addon - https://developers.home-assistant.io/docs/add-ons/tutorial/

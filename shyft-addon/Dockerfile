@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app code
 COPY app.py .
-COPY www /app/www
+COPY src /app/www
 
 # Copy startup script
 COPY run.sh /run.sh
