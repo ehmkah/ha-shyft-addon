@@ -4,7 +4,7 @@
   "description": "Simple mapping for shyft",
   "type": "module",
   "scripts": {
-    "start": "npx http-server ./src -o",
+    "start": "npx http-server www -o",
     "test": "node --test"
   },
   "devDependencies": {

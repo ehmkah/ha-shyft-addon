@@ -1,4 +1,6 @@
-const dataUri = "http://localhost:8000/0";
+const outsideHomeAssistant = "http://localhost:8000/0";
+const insideHomeAssistant = window.location.pathname + "/config";
+const dataUri = insideHomeAssistant;
 let data = {}
 
 async function getJson(url) {

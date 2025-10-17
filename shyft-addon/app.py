@@ -1,8 +1,9 @@
 import os
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, request
 import requests
 import json
 import datetime
+import shutil
 
 app = Flask(__name__, static_folder="www", static_url_path="")
 SHYFT_ACCESS_KEY = "not_set_yet"
@@ -12,22 +13,7 @@ CONFIG_PATH = "/data/config.json"
 # Serve the static HTML
 @app.route("/")
 def index():
-    return send_from_directory("src", "index.html")
-
-# config
-#{
-#  "indoor_temperatur" : "not_set_yet",
-#  "other_sensors" : "not_set_yes"
-#}
-#
-#
-#
-#
-#
-#
-#
-
-
+    return send_from_directory("www", "index.html")
 
 # Endpoint called when the button is clicked
 @app.route("/trigger", methods=["POST"])
@@ -53,7 +39,17 @@ def readConfig():
         print("Opened config file for reading")
         content = file.read()
 
-    return jsonify({"ausjelesen": content})
+    return content
+
+@app.route("/config", methods=["PUT"])
+def writeConfig():
+    content = request.get_data(as_text=True)
+
+    with open(CONFIG_PATH, "w") as file:
+        print("Opened config file for writing")
+        file.write(content)
+
+    return content
 
 if __name__ == "__main__":
     try:
@@ -62,12 +58,9 @@ if __name__ == "__main__":
             SHYFT_ACCESS_KEY = options.get("shyft_access_key", SHYFT_ACCESS_KEY)
         if not os.path.exists(CONFIG_PATH):
             print("File does not exists")
-            with open(CONFIG_PATH, "w") as file:
-                file.write("created " + datetime.now())
+            shutil.copy("www/defaultShyftConfig.json", CONFIG_PATH)
         else:
-            with open(CONFIG_PATH, "a") as file:
-                file.write("appended " + str(datetime.datetime.now()) +"\n")
-            print("Files does already exists")
+            print("Files does already exists. nothing was copied")
 
     except Exception as e:
         print("Failed to load config from options.json:", e)
