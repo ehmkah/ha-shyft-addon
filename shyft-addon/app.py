@@ -9,13 +9,14 @@ app = Flask(__name__, static_folder="www", static_url_path="")
 SHYFT_ACCESS_KEY = "not_set_yet"
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
+SUPERVISOR_TOKEN = value = os.getenv("SUPERVISOR_TOKEN")
 
 # Serve the static HTML
 @app.route("/")
 def index():
     return send_from_directory("www", "index.html")
 
-# Endpoint called when the button is clicked
+# Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
 def trigger():
     try:
@@ -65,5 +66,6 @@ if __name__ == "__main__":
     except Exception as e:
         print("Failed to load config from options.json:", e)
 
-    print("✅ Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)
+    print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
+    print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)
     app.run(host="0.0.0.0", port=8080)
