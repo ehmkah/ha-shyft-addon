@@ -1,6 +1,6 @@
 name: "Shyft home-assistant addon"
 description: "This is the shyft homeassistant-addon. It allows you to configure your homeassistant to send data for optimization to shyft."
-version: "0.1.0.20"
+version: "0.1.0.31"
 slug: "shyft_addon"
 init: false
 arch:
@@ -21,3 +21,4 @@ startup: services
 boot: auto
 host_network: false
 hassio_api: true
+homeassistant_api: true

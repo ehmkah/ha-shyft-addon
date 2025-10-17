@@ -3,11 +3,15 @@ GET {{ baseUri}}/api/
 Authorization: Bearer {{ token }}
 
 ### GET config
-GET {{ baseUri}}/api/states/
+GET {{ baseUri}}/api/states
 Authorization: Bearer {{ token }}
 
-### GET specific state
+### GET waterheater
 GET {{ baseUri}}/api/states/water_heater.heatpump_mock_the_mock
+Authorization: Bearer {{ token }}
+
+### GET waterheater.sensor
+GET {{ baseUri}}//api/states/sensor.heatpump_mock_the_sensor_mock
 Authorization: Bearer {{ token }}
 
 
