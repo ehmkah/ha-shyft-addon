@@ -15,8 +15,8 @@ This is the shyft home-assistant addon. :-)
 * install required node packages - `npm install`
 * run server `npm start`
 * Run local http server for testing config
-** `cd src/`
-** Start simple http server `npx http-server . -p 8000 --cors`
+** `cd tests/`
+** Start simple http server `npx json-server --watch db.json --port 8000`
 
 === Links
 
