@@ -21,9 +21,11 @@ function loadConfiguration() {
                 const row = document.createElement('tr');
                 const keyCell = document.createElement('td');
                 const valueCell = document.createElement('td');
+                const inputValue = document.createElement('input');
+                valueCell.appendChild(inputValue);
 
                 keyCell.textContent = key;
-                valueCell.textContent = value;
+                inputValue.value = value;
 
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
