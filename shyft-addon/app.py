@@ -23,8 +23,7 @@ def index():
 @app.route("/trigger", methods=["POST"])
 def trigger():
     try:
-        valueForOne = loadEntityState("sensor.heatpump_mock_the_sensor_mock")
-
+        valueForOne = loadSensorValueFor("indoor_temperatur")
         headers = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": f"Bearer {SHYFT_ACCESS_KEY}"
@@ -43,7 +42,6 @@ def trigger():
 def readConfig():
     content = "nothing"
     with open(CONFIG_PATH, "r") as file:
-        print("Opened config file for reading")
         content = file.read()
 
     return content
@@ -57,6 +55,12 @@ def writeConfig():
         file.write(content)
 
     return content
+
+def loadSensorValueFor(key):
+    with open(CONFIG_PATH, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    sensorId = data[key]
+    return loadEntityState(sensorId)
 
 def loadEntityState(sensorId):
     headers = {
