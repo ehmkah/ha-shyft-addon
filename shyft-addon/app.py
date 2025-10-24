@@ -1,5 +1,6 @@
 import os
 from flask import Flask, send_from_directory, jsonify, request
+import threading, time
 import requests
 import json
 import datetime
@@ -9,6 +10,7 @@ app = Flask(__name__, static_folder="www", static_url_path="")
 SHYFT_ACCESS_KEY = "not_set_yet"
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
+UPDATE_INTERVALL_IN_SECONDS=3600
 SUPERVISOR_TOKEN = value = os.getenv("SUPERVISOR_TOKEN")
 HASSIO_URI_RUNNING_ON_HAOS = "http://supervisor/core"
 HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
@@ -34,6 +36,9 @@ def index():
 
 # Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
+def triggerEndpoint():
+    trigger()
+
 def trigger():
     try:
         sensorValues = []
@@ -56,7 +61,7 @@ def trigger():
          "payload" : payload,
          "external_status": response.status_code})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)})
 
 
 @app.route("/config", methods=["GET"])
@@ -98,6 +103,16 @@ def loadEntityState(sensorId):
     response =  requests.get(completeUri, headers=headers)
     return response.json()["state"]
 
+
+def callBubblePeriodically():
+    print("Send values periodically to bubble")
+    while True:
+        with app.app_context():
+            trigger()
+        time.sleep(UPDATE_INTERVALL_IN_SECONDS)
+
+thread = threading.Thread(target=callBubblePeriodically, daemon=True)
+thread.start()
 
 if __name__ == "__main__":
     try:
