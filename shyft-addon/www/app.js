@@ -1,6 +1,7 @@
 const outsideHomeAssistant = "http://localhost:8000/0";
 const insideHomeAssistant = window.location.pathname;
 const configUri = insideHomeAssistant + "/config";
+const toggleUri = insideHomeAssistant + "/togglewaterheater";
 const sensorIdsUri = insideHomeAssistant + "/sensorids";
 let configData = {}
 
@@ -32,6 +33,22 @@ async function putJson(url, data) {
     return await response.json();
 }
 
+async function postJson(url, data) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 
 const VALUE_POSTFIX = "_value";
 
@@ -45,7 +62,12 @@ function saveConfiguration() {
 
         await putJson(configUri, toBeWritten);
     }
+}
 
+function toggleHeating() {
+    return async () => {
+        await postJson(toggleUri, {});
+    }
 }
 
 function loadConfiguration() {
@@ -88,9 +110,11 @@ function loadConfiguration() {
 function setup() {
     const showConfigButton = document.getElementById('showConfig');
     const saveConfigButton = document.getElementById('saveConfig');
+    const toggleHeatingButton = document.getElementById('toggleHeating');
 
     showConfigButton.addEventListener('click', loadConfiguration());
     saveConfigButton.addEventListener('click', saveConfiguration());
+    toggleHeatingButton.addEventListener('click', toggleHeating());
 }
 
 // wait until DOM is ready

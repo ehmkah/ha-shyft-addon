@@ -2,18 +2,36 @@
 GET {{ baseUri}}/api/
 Authorization: Bearer {{ token }}
 
-### GET config
+### GET all sensors
 GET {{ baseUri}}/api/states
 Authorization: Bearer {{ token }}
 
-### GET waterheater
+
+### GET one specific sensor
 GET {{ baseUri}}/api/states/water_heater.heatpump_mock_the_mock
 Authorization: Bearer {{ token }}
 
-### GET waterheater.sensor
-
-GET {{ baseUri}}/api/states
+### Get all services
+GET {{ baseUri}}/api/services
 Authorization: Bearer {{ token }}
+
+### Turn waterheater on
+POST {{ baseUri}}/api/services/water_heater/turn_on
+Authorization: Bearer {{ token }}
+Content-Type: application/json
+
+{"entity_id": "water_heater.heatpump_mock_the_mock"}
+
+### Turn waterheater off
+POST {{ baseUri}}/api/services/water_heater/turn_off
+Authorization: Bearer {{ token }}
+Content-Type: application/json
+
+{"entity_id": "water_heater.heatpump_mock_the_mock"}
+
+
+
+
 
 
 ### GET components

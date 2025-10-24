@@ -72,6 +72,16 @@ def readConfig():
 
     return content
 
+@app.route("/togglewaterheater", methods=["POST"])
+def toggle():
+    #currentState = loadEntityState("water_heater.heatpump_mock_the_mock")
+    body = { "entity_id": "water_heater.heatpump_mock_the_mock" }
+    postToHA("/api/services/water_heater/turn_on", body )
+    content = {"status" : "OK"}
+
+    return content
+
+
 @app.route("/sensorids", methods=["GET"])
 def readSensorIds():
     response = getFromHA("/api/states")
@@ -111,14 +121,24 @@ def getFromHA(path):
     return response.json()
 
 
+def postToHA(path, body):
+    headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {SUPERVISOR_TOKEN}"
+                }
+    completeUri = HASSIO_URI+path
+    response =  requests.post(completeUri, headers=headers, json=body)
+    return response.json()
+
 def callBubblePeriodically():
     while True:
         with app.app_context():
             trigger()
         time.sleep(UPDATE_INTERVALL_IN_SECONDS)
 
-thread = threading.Thread(target=callBubblePeriodically, daemon=True)
-thread.start()
+# Enable before merge
+#thread = threading.Thread(target=callBubblePeriodically, daemon=True)
+#thread.start()
 
 if __name__ == "__main__":
     try:
