@@ -1,6 +1,7 @@
 const outsideHomeAssistant = "http://localhost:8000/0";
-const insideHomeAssistant = window.location.pathname + "/config";
-const dataUri = insideHomeAssistant;
+const insideHomeAssistant = window.location.pathname;
+const configUri = insideHomeAssistant + "/config";
+const sensorIdsUri = insideHomeAssistant + "/sensorids";
 let configData = {}
 
 async function getJson(url) {
@@ -42,7 +43,7 @@ function saveConfiguration() {
             toBeWritten[key] = document.getElementById(key + VALUE_POSTFIX).value;
         }
 
-        await putJson(dataUri, toBeWritten);
+        await putJson(configUri, toBeWritten);
     }
 
 }
@@ -50,9 +51,17 @@ function saveConfiguration() {
 function loadConfiguration() {
     return async () => {
         try {
-            configData = await getJson(dataUri);
+            configData = await getJson(configUri);
+            sensorIds = await getJson(sensorIdsUri);
             const tbody = document.getElementById('mappingData');
+            const sensorIdsGUIElement = document.getElementById('sensorIds');
             tbody.innerHTML = ''; // clear any existing rows
+
+            for (const sensorId of sensorIds) {
+                const option = document.createElement("option");
+                option.value = sensorId;
+                sensorIdsGUIElement.appendChild(option);
+            }
 
             for (const [key, value] of Object.entries(configData)) {
                 const row = document.createElement('tr');
@@ -62,6 +71,7 @@ function loadConfiguration() {
                 const inputValue = document.createElement('input');
                 inputValue.id = key + VALUE_POSTFIX;
                 inputValue.value = value;
+                inputValue.setAttribute("list", "sensorIds");
 
                 const valueCell = document.createElement('td');
                 valueCell.appendChild(inputValue);

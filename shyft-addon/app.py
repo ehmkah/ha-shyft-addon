@@ -72,6 +72,12 @@ def readConfig():
 
     return content
 
+@app.route("/sensorids", methods=["GET"])
+def readSensorIds():
+    content = ["eins", "zwei", "drei"]
+
+    return jsonify(content)
+
 @app.route("/config", methods=["PUT"])
 def writeConfig():
     content = request.get_data(as_text=True)
