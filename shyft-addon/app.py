@@ -14,25 +14,46 @@ HASSIO_URI_RUNNING_ON_HAOS = "http://supervisor/core"
 HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
 HASSIO_URI = HASSIO_URI_RUNNING_ON_HAOS
 
+LIST_OF_SENSORS = [
+"photovoltaic_powerflow_pv",
+"photovoltaic_powerflow_load",
+"photovoltaic_powerflow_grid",
+"photovoltaic_powerflow_battery",
+"battery_storage_command_mode",
+"battery_state_of_charge",
+"battery_discharge_limit_current",
+"battery_charge_limit_current"
+]
+
+
 # Serve the static HTML
 @app.route("/")
 def index():
     return send_from_directory("www", "index.html")
 
+
 # Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
 def trigger():
     try:
-        valueForOne = loadSensorValueFor("indoor_temperatur")
+        sensorValues = []
+        for sensor in LIST_OF_SENSORS:
+             valueForSensor = loadSensorValueFor(sensor)
+             if valueForSensor != "":
+                 sensorValues.append(valueForSensor)
+        payload = ""
+        if len(sensorValues) > 0:
+            payload = "&".join(sensorValues)
+
         headers = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": f"Bearer {SHYFT_ACCESS_KEY}"
             }
-        payload = "aTestValue=created+by+TimeSeriesResultsEntityRepositoryIntegrationTest.+can+be+Removed+without+problems&secondTestValue="+valueForOne
         external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/obj/homeassistanttest"
 
         response = requests.post(external_url, headers=headers, data=payload)
         return jsonify({"status": "success",
+         "payload" : payload,
          "external_status": response.status_code})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -60,7 +81,12 @@ def loadSensorValueFor(key):
     with open(CONFIG_PATH, "r", encoding="utf-8") as file:
         data = json.load(file)
     sensorId = data[key]
-    return loadEntityState(sensorId)
+    sensorValue="unset"
+    try:
+        sensorValue=loadEntityState(sensorId)
+        return f"{key}={sensorValue}"
+    except:
+        return ""
 
 def loadEntityState(sensorId):
     headers = {
