@@ -37,7 +37,7 @@ def index():
 # Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
 def triggerEndpoint():
-    trigger()
+    return trigger()
 
 def trigger():
     try:
@@ -55,9 +55,9 @@ def trigger():
                 "Authorization": f"Bearer {SHYFT_ACCESS_KEY}"
             }
         external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/obj/homeassistanttest"
-
         response = requests.post(external_url, headers=headers, data=payload)
-        return jsonify({"status": "success",
+        return jsonify({
+         "status": "success",
          "payload" : payload,
          "external_status": response.status_code})
     except Exception as e:
@@ -83,7 +83,6 @@ def writeConfig():
     content = request.get_data(as_text=True)
 
     with open(CONFIG_PATH, "w") as file:
-        print("Opened config file for writing")
         file.write(content)
 
     return content
@@ -100,18 +99,21 @@ def loadSensorValueFor(key):
         return ""
 
 def loadEntityState(sensorId):
+    response = getFromHA("/api/states/"+sensorId)
+    return response["state"]
+
+
+def getFromHA(path):
     headers = {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Authorization": f"Bearer {SUPERVISOR_TOKEN}"
                 }
-    completeUri = HASSIO_URI+"/api/states/"+sensorId
-    print("complete uri " +completeUri)
+    completeUri = HASSIO_URI+path
     response =  requests.get(completeUri, headers=headers)
-    return response.json()["state"]
+    return response.json()
 
 
 def callBubblePeriodically():
-    print("Send values periodically to bubble")
     while True:
         with app.app_context():
             trigger()

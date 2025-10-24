@@ -11,7 +11,8 @@ GET {{ baseUri}}/api/states/water_heater.heatpump_mock_the_mock
 Authorization: Bearer {{ token }}
 
 ### GET waterheater.sensor
-GET {{ baseUri}}//api/states/sensor.heatpump_mock_the_sensor_mock
+
+GET {{ baseUri}}/api/states
 Authorization: Bearer {{ token }}
 
 
