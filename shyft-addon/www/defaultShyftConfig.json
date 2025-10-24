@@ -1,4 +1,10 @@
 {
-  "indoor_temperatur" : "not_set_yet",
-  "other_sensors" : "not_set_yes"
+    "photovoltaic_powerflow_pv" : "not_set_yes",
+    "photovoltaic_powerflow_load" : "not_set_yes",
+    "photovoltaic_powerflow_grid" : "not_set_yes",
+    "photovoltaic_powerflow_battery" : "not_set_yes",
+    "battery_storage_command_mode" : "not_set_yes",
+    "battery_state_of_charge" : "not_set_yes",
+    "battery_discharge_limit_current" : "not_set_yes",
+    "battery_charge_limit_current" : "not_set_yes"
 }
