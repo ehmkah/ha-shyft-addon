@@ -74,9 +74,8 @@ def readConfig():
 
 @app.route("/sensorids", methods=["GET"])
 def readSensorIds():
-    content = ["eins", "zwei", "drei"]
-
-    return jsonify(content)
+    response = getFromHA("/api/states")
+    return jsonify([item["entity_id"] for item in response])
 
 @app.route("/config", methods=["PUT"])
 def writeConfig():
@@ -101,7 +100,6 @@ def loadSensorValueFor(key):
 def loadEntityState(sensorId):
     response = getFromHA("/api/states/"+sensorId)
     return response["state"]
-
 
 def getFromHA(path):
     headers = {
