@@ -1,7 +1,7 @@
 const outsideHomeAssistant = "http://localhost:8000/0";
 const insideHomeAssistant = window.location.pathname + "/config";
 const dataUri = insideHomeAssistant;
-let data = {}
+let configData = {}
 
 async function getJson(url) {
     const response = await fetch(url);
@@ -37,7 +37,7 @@ const VALUE_POSTFIX = "_value";
 function saveConfiguration() {
     return async () => {
         const toBeWritten = {};
-        for (const [key] of Object.entries(data)) {
+        for (const [key] of Object.entries(configData)) {
             document.getElementById(key + VALUE_POSTFIX);
             toBeWritten[key] = document.getElementById(key + VALUE_POSTFIX).value;
         }
@@ -50,11 +50,11 @@ function saveConfiguration() {
 function loadConfiguration() {
     return async () => {
         try {
-            data = await getJson(dataUri);
+            configData = await getJson(dataUri);
             const tbody = document.getElementById('mappingData');
             tbody.innerHTML = ''; // clear any existing rows
 
-            for (const [key, value] of Object.entries(data)) {
+            for (const [key, value] of Object.entries(configData)) {
                 const row = document.createElement('tr');
                 const keyCell = document.createElement('td');
                 keyCell.textContent = key;
