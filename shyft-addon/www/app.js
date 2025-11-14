@@ -73,12 +73,12 @@ function toggleHeating() {
 function loadConfiguration() {
     return async () => {
         try {
-            configData = await getJson(configUri);
-            sensorIds = await getJson(sensorIdsUri);
+            console.log("loadConfiguration called");
+            const configData = await getJson(configUri);
+            const sensorIds = await getJson(sensorIdsUri);
             const tbody = document.getElementById('mappingData');
             const sensorIdsGUIElement = document.getElementById('sensorIds');
-            tbody.innerHTML = ''; // clear any existing rows
-
+            tbody.innerHTML = '';
             for (const sensorId of sensorIds) {
                 const option = document.createElement("option");
                 option.value = sensorId;
