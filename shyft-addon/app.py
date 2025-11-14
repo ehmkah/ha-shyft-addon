@@ -138,7 +138,6 @@ def callBubblePeriodically():
             trigger()
         time.sleep(UPDATE_INTERVALL_IN_SECONDS)
 
-# Enable before merge
 thread = threading.Thread(target=callBubblePeriodically, daemon=True)
 thread.start()
 
