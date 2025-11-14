@@ -72,6 +72,18 @@ def readConfig():
 
     return content
 
+@app.route("/togglewaterheater", methods=["POST"])
+def toggle():
+    with open(CONFIG_PATH, "r") as file:
+            content = json.load(file)
+            # water_heater.heatpump_mock_the_mock
+            body = { "entity_id": content["actorMappings"]["heating_on"]}
+            postToHA("/api/services/water_heater/turn_on", body )
+            content = {"status" : "OK"}
+            return content
+
+
+
 @app.route("/sensorids", methods=["GET"])
 def readSensorIds():
     response = getFromHA("/api/states")
@@ -89,7 +101,7 @@ def writeConfig():
 def loadSensorValueFor(key):
     with open(CONFIG_PATH, "r", encoding="utf-8") as file:
         data = json.load(file)
-    sensorId = data[key]
+    sensorId = data["sensorMappings"][key]
     sensorValue="unset"
     try:
         sensorValue=loadEntityState(sensorId)
@@ -110,6 +122,15 @@ def getFromHA(path):
     response =  requests.get(completeUri, headers=headers)
     return response.json()
 
+
+def postToHA(path, body):
+    headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {SUPERVISOR_TOKEN}"
+                }
+    completeUri = HASSIO_URI+path
+    response =  requests.post(completeUri, headers=headers, json=body)
+    return response.json()
 
 def callBubblePeriodically():
     while True:
