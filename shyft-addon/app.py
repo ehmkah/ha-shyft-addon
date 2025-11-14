@@ -74,12 +74,14 @@ def readConfig():
 
 @app.route("/togglewaterheater", methods=["POST"])
 def toggle():
-    #currentState = loadEntityState("water_heater.heatpump_mock_the_mock")
-    body = { "entity_id": "water_heater.heatpump_mock_the_mock" }
-    postToHA("/api/services/water_heater/turn_on", body )
-    content = {"status" : "OK"}
+    with open(CONFIG_PATH, "r") as file:
+            content = json.load(file)
+            # water_heater.heatpump_mock_the_mock
+            body = { "entity_id": content["actorMappings"]["heating_on"]}
+            postToHA("/api/services/water_heater/turn_on", body )
+            content = {"status" : "OK"}
+            return content
 
-    return content
 
 
 @app.route("/sensorids", methods=["GET"])
