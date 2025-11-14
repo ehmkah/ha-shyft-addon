@@ -101,7 +101,7 @@ def writeConfig():
 def loadSensorValueFor(key):
     with open(CONFIG_PATH, "r", encoding="utf-8") as file:
         data = json.load(file)
-    sensorId = data[key]
+    sensorId = data["sensorMappings"][key]
     sensorValue="unset"
     try:
         sensorValue=loadEntityState(sensorId)
@@ -139,8 +139,8 @@ def callBubblePeriodically():
         time.sleep(UPDATE_INTERVALL_IN_SECONDS)
 
 # Enable before merge
-#thread = threading.Thread(target=callBubblePeriodically, daemon=True)
-#thread.start()
+thread = threading.Thread(target=callBubblePeriodically, daemon=True)
+thread.start()
 
 if __name__ == "__main__":
     try:
