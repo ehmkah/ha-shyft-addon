@@ -54,12 +54,19 @@ const VALUE_POSTFIX = "_value";
 
 function saveConfiguration() {
     return async () => {
-        const toBeWritten = {};
-        for (const [key] of Object.entries(configData)) {
+        console.log("saveConfiguration aufgerufen");
+        const sensorValues = {};
+        for (const [key] of Object.entries(configData["sensorMappings"])) {
             document.getElementById(key + VALUE_POSTFIX);
-            toBeWritten[key] = document.getElementById(key + VALUE_POSTFIX).value;
+            sensorValues[key] = document.getElementById(key + VALUE_POSTFIX).value;
+        }
+        const actorValues = {};
+        for (const [key] of Object.entries(configData["actorMappings"])) {
+            document.getElementById(key + VALUE_POSTFIX);
+            actorValues[key] = document.getElementById(key + VALUE_POSTFIX).value;
         }
 
+        const toBeWritten = {"sensorMappings" : sensorValues, "actorMappings" : actorValues};
         await putJson(configUri, toBeWritten);
     }
 }
@@ -74,38 +81,67 @@ function loadConfiguration() {
     return async () => {
         try {
             console.log("loadConfiguration called");
-            const configData = await getJson(configUri);
+            configData = await getJson(configUri);
             const sensorIds = await getJson(sensorIdsUri);
-            const tbody = document.getElementById('mappingData');
             const sensorIdsGUIElement = document.getElementById('sensorIds');
-            tbody.innerHTML = '';
+
             for (const sensorId of sensorIds) {
                 const option = document.createElement("option");
                 option.value = sensorId;
                 sensorIdsGUIElement.appendChild(option);
             }
-
-            for (const [key, value] of Object.entries(configData)) {
-                const row = document.createElement('tr');
-                const keyCell = document.createElement('td');
-                keyCell.textContent = key;
-
-                const inputValue = document.createElement('input');
-                inputValue.id = key + VALUE_POSTFIX;
-                inputValue.value = value;
-                inputValue.setAttribute("list", "sensorIds");
-
-                const valueCell = document.createElement('td');
-                valueCell.appendChild(inputValue);
-
-                row.appendChild(keyCell);
-                row.appendChild(valueCell);
-                tbody.appendChild(row);
-            }
+            renderSensorMappings(configData["sensorMappings"]);
+            renderActorMappings(configData["actorMappings"]);
         } catch (err) {
         }
     };
 }
+
+function renderSensorMappings(configData) {
+    const tbody = document.getElementById('sensorMappingId');
+    tbody.innerHTML = '';
+    for (const [key, value] of Object.entries(configData)) {
+        const row = document.createElement('tr');
+        const keyCell = document.createElement('td');
+        keyCell.textContent = key;
+
+        const inputValue = document.createElement('input');
+        inputValue.id = key + VALUE_POSTFIX;
+        inputValue.value = value;
+        inputValue.setAttribute("list", "sensorIds");
+
+        const valueCell = document.createElement('td');
+        valueCell.appendChild(inputValue);
+
+        row.appendChild(keyCell);
+        row.appendChild(valueCell);
+        tbody.appendChild(row);
+    }
+}
+
+function renderActorMappings(configData) {
+    const tbody = document.getElementById('actorMappingId');
+    tbody.innerHTML = '';
+    for (const [key, value] of Object.entries(configData)) {
+        const row = document.createElement('tr');
+        const keyCell = document.createElement('td');
+        keyCell.textContent = key;
+
+        const inputValue = document.createElement('input');
+        inputValue.id = key + VALUE_POSTFIX;
+        inputValue.value = value;
+        inputValue.setAttribute("list", "sensorIds");
+
+        const valueCell = document.createElement('td');
+        valueCell.appendChild(inputValue);
+
+        row.appendChild(keyCell);
+        row.appendChild(valueCell);
+        tbody.appendChild(row);
+    }
+}
+
+
 
 function setup() {
     const showConfigButton = document.getElementById('showConfig');
