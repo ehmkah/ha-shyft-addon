@@ -1,7 +1,6 @@
 const outsideHomeAssistant = "http://localhost:8000/0";
 const insideHomeAssistant = window.location.pathname;
 const configUri = insideHomeAssistant + "/config";
-const toggleUri = insideHomeAssistant + "/togglewaterheater";
 const sensorIdsUri = insideHomeAssistant + "/sensorids";
 let configData = {}
 
@@ -71,12 +70,6 @@ function saveConfiguration() {
     }
 }
 
-function toggleHeating() {
-    return async () => {
-        await postJson(toggleUri, {});
-    }
-}
-
 function loadConfiguration() {
     return async () => {
         try {
@@ -91,7 +84,6 @@ function loadConfiguration() {
                 sensorIdsGUIElement.appendChild(option);
             }
             renderSensorMappings(configData["sensorMappings"]);
-            renderActorMappings(configData["actorMappings"]);
         } catch (err) {
         }
     };
@@ -119,38 +111,13 @@ function renderSensorMappings(configData) {
     }
 }
 
-function renderActorMappings(configData) {
-    const tbody = document.getElementById('actorMappingId');
-    tbody.innerHTML = '';
-    for (const [key, value] of Object.entries(configData)) {
-        const row = document.createElement('tr');
-        const keyCell = document.createElement('td');
-        keyCell.textContent = key;
-
-        const inputValue = document.createElement('input');
-        inputValue.id = key + VALUE_POSTFIX;
-        inputValue.value = value;
-        inputValue.setAttribute("list", "sensorIds");
-
-        const valueCell = document.createElement('td');
-        valueCell.appendChild(inputValue);
-
-        row.appendChild(keyCell);
-        row.appendChild(valueCell);
-        tbody.appendChild(row);
-    }
-}
-
-
 
 function setup() {
     const showConfigButton = document.getElementById('showConfig');
     const saveConfigButton = document.getElementById('saveConfig');
-    const toggleHeatingButton = document.getElementById('toggleHeating');
 
     showConfigButton.addEventListener('click', loadConfiguration());
     saveConfigButton.addEventListener('click', saveConfiguration());
-    toggleHeatingButton.addEventListener('click', toggleHeating());
 }
 
 // wait until DOM is ready

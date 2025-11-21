@@ -23,7 +23,7 @@
 <button onclick="trigger()">Send Request</button>
 <button id="showConfig">Konfiguration Laden</button>
 <button id="saveConfig">Konfiguration Speichern</button>
-<button id="toggleHeating">Heizung an</button>
+
 <datalist id="sensorIds">
 </datalist>
 <table id="sensorMappingTable">
@@ -35,18 +35,6 @@
     </thead>
     <tbody id="sensorMappingId"/>
 </table>
-
-<table id="actorMappingTable">
-    <thead>
-    <tr>
-        <th>Shyft-Actor</th>
-        <th>Homeassistant Actor ID</th>
-    </tr>
-    </thead>
-    <tbody id="actorMappingId"/>
-</table>
-
-
 
 <script>
     function trigger() {
