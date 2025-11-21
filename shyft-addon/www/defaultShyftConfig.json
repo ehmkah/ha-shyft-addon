@@ -1,16 +1,16 @@
 {
   "sensorMappings" : {
-    "photovoltaic_powerflow_pv" : "not_set_yet",
-    "photovoltaic_powerflow_load" : "not_set_yet",
-    "photovoltaic_powerflow_grid" : "not_set_yet",
-    "photovoltaic_powerflow_battery" : "not_set_yet",
-    "battery_storage_command_mode" : "not_set_yet",
-    "battery_state_of_charge" : "not_set_yet",
-    "battery_discharge_limit_current" : "not_set_yet",
-    "battery_charge_limit_current" : "not_set_yet"
+    "photovoltaic_powerflow_pv" : "",
+    "photovoltaic_powerflow_load" : "",
+    "photovoltaic_powerflow_grid" : "",
+    "photovoltaic_powerflow_battery" : "",
+    "battery_storage_command_mode" : "",
+    "battery_state_of_charge" : "",
+    "battery_discharge_limit_current" : "",
+    "battery_charge_limit_current" : ""
   },
   "actorMappings" : {
-    "heating_on" : "not_set_yet"
+    "heating_on" : ""
   }
     
 }
