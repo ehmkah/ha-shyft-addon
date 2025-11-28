@@ -1,6 +1,6 @@
 name: "shyft-power"
 description: "This is the shyft homeassistant-addon. It allows you to configure your homeassistant to send data for optimization to shyft."
-version: "0.0.3.23"
+version: "0.0.3.26"
 slug: "shyft_addon"
 init: false
 arch:
