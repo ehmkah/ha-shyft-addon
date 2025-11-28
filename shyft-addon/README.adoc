@@ -18,6 +18,17 @@ This is the shyft home-assistant addon. :-)
 ** `cd tests/`
 ** Start simple http server `npx json-server --watch db.json --port 8000`
 
+* Python parts
+** General information can be found in https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/[offical python documentation]
+
+** create python venv `python3 -m venv .venv`
+** open environment - `source .venv/bin/activate`
+** install dependencies - `python3 -m pip install -r requirements.txt`
+
+** After modifying a python dependency
+*** `python3 -m pip freeze > requirements.txt`
+
+
 === Links
 
 * Writing first homeassistant  addon - https://developers.home-assistant.io/docs/add-ons/tutorial/

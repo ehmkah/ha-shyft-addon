@@ -1,0 +1,22 @@
+
+GET http://localhost:8080/sensorids
+
+### putting
+PUT http://localhost:8080/config
+
+{
+  "sensorMappings" : {
+    "photovoltaic_powerflow_pv" : "thesensor:value",
+    "photovoltaic_powerflow_load" : "sensore2",
+    "photovoltaic_powerflow_grid" : "",
+    "photovoltaic_powerflow_battery" : "",
+    "battery_storage_command_mode" : "",
+    "battery_state_of_charge" : "",
+    "battery_discharge_limit_current" : "",
+    "battery_charge_limit_current" : ""
+  },
+  "actorMappings" : {
+    "heating_on" : ""
+  }
+
+}

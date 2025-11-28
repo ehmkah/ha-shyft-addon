@@ -14,6 +14,7 @@ UPDATE_INTERVALL_IN_SECONDS=3600
 SUPERVISOR_TOKEN = value = os.getenv("SUPERVISOR_TOKEN")
 HASSIO_URI_RUNNING_ON_HAOS = "http://supervisor/core"
 HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
+#HASSIO_URI = HASSIO_URI_RUNNING_REMOTE
 HASSIO_URI = HASSIO_URI_RUNNING_ON_HAOS
 
 LIST_OF_SENSORS = [
@@ -75,16 +76,31 @@ def readConfig():
 @app.route("/sensorids", methods=["GET"])
 def readSensorIds():
     response = getFromHA("/api/states")
-    return jsonify([item["entity_id"] for item in response])
+    return mapToResponse(response)
+
+
+def mapToResponse(response):
+    result = []
+    for item in response:
+          result.append(item["entity_id"]+ ":" + item["state"])
+    return jsonify(result)
+
 
 @app.route("/config", methods=["PUT"])
 def writeConfig():
     content = request.get_data(as_text=True)
+    data = json.loads(content)
 
+    # iterate over key/value pairs
+    for key, value in data.items():
+        for inner_key, inner_value in value.items():
+            data[key][inner_key]=inner_value.split(":", 1)[0]
+
+    result = json.dumps(data)
     with open(CONFIG_PATH, "w") as file:
-        file.write(content)
+        file.write(result)
 
-    return content
+    return result
 
 def loadSensorValueFor(key):
     with open(CONFIG_PATH, "r", encoding="utf-8") as file:

@@ -56,14 +56,9 @@ function saveConfiguration() {
         console.log("saveConfiguration aufgerufen");
         const sensorValues = {};
         for (const [key] of Object.entries(configData["sensorMappings"])) {
-            document.getElementById(key + VALUE_POSTFIX);
             sensorValues[key] = document.getElementById(key + VALUE_POSTFIX).value;
         }
-        const actorValues = {};
-        for (const [key] of Object.entries(configData["actorMappings"])) {
-            document.getElementById(key + VALUE_POSTFIX);
-            actorValues[key] = document.getElementById(key + VALUE_POSTFIX).value;
-        }
+        const actorValues = configData["actorMappings"];
 
         const toBeWritten = {"sensorMappings" : sensorValues, "actorMappings" : actorValues};
         await putJson(configUri, toBeWritten);
