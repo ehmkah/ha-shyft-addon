@@ -172,6 +172,18 @@ function renderSensorMappings(configData) {
         const label = context.label;
         keyCell.textContent = label;
 
+        const tooltip = document.createElement("span");
+        tooltip.className = 'tooltip';
+        const tooltipIcon = document.createElement("span");
+        tooltipIcon.className='tooltip-icon';
+        tooltipIcon.textContent='?';
+        tooltip.appendChild(tooltipIcon);
+        const tooltipText = document.createElement("span");
+        tooltipText.className='tooltip-text';
+        tooltipText.textContent='Use 4–12 characters, letters or numbers.';
+        tooltip.appendChild(tooltipText);
+        keyCell.appendChild(tooltip);
+
         const inputValue = document.createElement('input');
         inputValue.id = key + VALUE_POSTFIX;
         inputValue.value = value;
