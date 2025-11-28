@@ -79,7 +79,8 @@ const helpinformation = {
     },
     'electronicvehicle_state_of_charge': {
         label: 'EV - SOC',
-        description: ' Ladestand deines Autos (in %)'}
+        description: ' Ladestand deines Autos (in %)'
+    }
 }
 
 async function getJson(url) {
@@ -143,23 +144,21 @@ function saveConfiguration() {
     }
 }
 
-function loadConfiguration() {
-    return async () => {
-        try {
-            console.log("loadConfiguration called");
-            configData = await getJson(configUri);
-            const sensorIds = await getJson(sensorIdsUri);
-            const sensorIdsGUIElement = document.getElementById('sensorIds');
+const loadConfiguration = async (event) => {
+    try {
+        console.log("loadConfiguration called");
+        configData = await getJson(configUri);
+        const sensorIds = await getJson(sensorIdsUri);
+        const sensorIdsGUIElement = document.getElementById('sensorIds');
 
-            for (const sensorId of sensorIds) {
-                const option = document.createElement("option");
-                option.value = sensorId;
-                sensorIdsGUIElement.appendChild(option);
-            }
-            renderSensorMappings(configData["sensorMappings"]);
-        } catch (err) {
+        for (const sensorId of sensorIds) {
+            const option = document.createElement("option");
+            option.value = sensorId;
+            sensorIdsGUIElement.appendChild(option);
         }
-    };
+        renderSensorMappings(configData["sensorMappings"]);
+    } catch (err) {
+    }
 }
 
 function renderSensorMappings(configData) {
@@ -175,12 +174,12 @@ function renderSensorMappings(configData) {
         const tooltip = document.createElement("span");
         tooltip.className = 'tooltip';
         const tooltipIcon = document.createElement("span");
-        tooltipIcon.className='tooltip-icon';
-        tooltipIcon.textContent='?';
+        tooltipIcon.className = 'tooltip-icon';
+        tooltipIcon.textContent = '?';
         tooltip.appendChild(tooltipIcon);
         const tooltipText = document.createElement("span");
-        tooltipText.className='tooltip-text';
-        tooltipText.textContent='Use 4–12 characters, letters or numbers.';
+        tooltipText.className = 'tooltip-text';
+        tooltipText.textContent = 'Use 4–12 characters, letters or numbers.';
         tooltip.appendChild(tooltipText);
         keyCell.appendChild(tooltip);
 
@@ -201,12 +200,15 @@ function renderSensorMappings(configData) {
 
 
 function setup() {
-    const showConfigButton = document.getElementById('showConfig');
     const saveConfigButton = document.getElementById('saveConfig');
-
-    showConfigButton.addEventListener('click', loadConfiguration());
     saveConfigButton.addEventListener('click', saveConfiguration());
 }
 
 // wait until DOM is ready
 window.addEventListener('DOMContentLoaded', setup);
+
+if (document.readyState === 'complete') {
+    loadConfiguration();
+} else {
+    window.addEventListener('load', loadConfiguration);
+}
