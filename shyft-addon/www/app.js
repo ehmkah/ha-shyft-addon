@@ -101,6 +101,7 @@ function renderSensorMappings(configData) {
         inputValue.id = key + VALUE_POSTFIX;
         inputValue.value = value;
         inputValue.setAttribute("list", "sensorIds");
+        inputValue.setAttribute("class", "sensorInput");
 
         const valueCell = document.createElement('td');
         valueCell.appendChild(inputValue);
