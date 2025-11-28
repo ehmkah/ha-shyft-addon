@@ -82,7 +82,8 @@ def readSensorIds():
 def mapToResponse(response):
     result = []
     for item in response:
-          result.append(item["entity_id"]+ ":" + item["state"])
+        unitOfMeasurement = item["attributes"].get("unit_of_measurement", "")
+        result.append(item["entity_id"]+ ":" + item["state"] + " " + unitOfMeasurement)
     return jsonify(result)
 
 
