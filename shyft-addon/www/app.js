@@ -5,55 +5,82 @@ const sensorIdsUri = insideHomeAssistant + "/sensorids";
 let configData = {}
 
 const helpinformation = {
-    "photovoltaic_powerflow_pv" : {
-        "label": "Aktueller Strom - Netz",
-        "description" :"Die aktuelle Leistung (in kW), die dein Haushalt aus dem öffentlichen Stromnetz bezieht bzw. dorthin einspeist."
-    }
+    'photovoltaic_powerflow_load': {
+        label: 'Aktueller Strom - Haushalt',
+        description: ' Die Leistung (in kW), die dein Haushalt aktuell verbraucht.'
+    },
+    'photovoltaic_powerflow_pv': {
+        label: 'Aktueller Strom - PV',
+        description: ' Die aktuelle Leistung (in kW) deiner PV-Anlage.'
+    },
+    'photovoltaic_powerflow_grid': {
+        label: 'Aktueller Strom - Netz',
+        description: ' Die aktuelle Leistung (in kW), die dein Haushalt aus dem öffentlichen Stromnetz bezieht bzw. dorthin einspeist.'
+    },
+    'photovoltaic_powerflow_battery': {
+        label: 'Aktueller Strom - Batterie',
+        description: ' Die aktuelle Leistung (in kW), mit dem deine Batterie geladen (positiver Wert) oder entladen (negativer Wert) wird.'
+    },
+    'battery_state_of_charge': {
+        label: 'Ladestand',
+        description: ' Aktueller Ladestand deiner Batterie in Prozent.'
+    },
+    'battery_storage_command_mode': {
+        label: 'Batterie: Steuerungsmodus',
+        'description': ' Der Modus, in den deine Batterie versetzt werden kann (z.B. Eigenverbrauchsoptimierung, Netzladen)'
+    },
+    'battery_max_charge_power': {
+        label: 'Batterie: Aktuelle max. Ladeleistung',
+        description: ' Leistung (in kW), die an der Batterie als aktuelle Begrenzung für die Ladeleistung eingestellt ist.'
+    },
+    'battery_max_discharge_power': {
+        label: 'Batterie: Max. Entladeleistung',
+        'description': ' Mit wieviel Leistung (in kW) darf deine Batterie höchstens entladen werden?'
+    },
+    'heatpump_dhw_tank_temp': {
+        label: 'Temperatur Warmwassertank',
+        'description': ' Die aktuelle Temperatur im Warmwassertank (in °C)'
+    },
+    'heatpump_dhw_activated': {
+        label: 'Warmwassermodus aktiviert? An/Aus',
+        'description': ' je nachdem ob an deiner Wärmepumpe die Warmwasserbereitung aktiviert ist oder nicht.'
+    },
+    'heatpump_dhw_on_off': {
+        label: 'Warmwasser gerade erwärmt? An / Aus',
+        'description': ' je nachdem ob deine Wärmepumpe gerade Brauchwasser erwärmt oder nicht.'
+    },
+    'heatpump_heating_target_temp_normal': {
+        label: 'Zieltemperatur (aktuell)',
+        'description': ' Gewünschte Raumtemperatur in °C, die du an deiner Wärmepumpe einstellst. Über die stündliche Anpassung dieses Werte steuert Shyft die Leistung deiner Wärmepumpe.'
+    },
+    'heatpump_heating_activated': {
+        label: 'Heizung aktiviert?',
+        description: ' Ja / Nein, je nachdem, ob du die Heizung an deiner Wärmepumpe aktiviert hast oder nicht.'
+    },
+    'heatpump_current_power_elect': {
+        label: 'Aktuelle Leistung Wärmepumpe (elektrisch)',
+        description: ' in kW'
+    },
+    'heatpump_on_off': {
+        label: 'Wärmepumpe an/aus',
+        'description': ' An/Aus, je nachdem ob deine Wärmepumpe gerade läuft oder aus ist.'
+    },
+    'heatpump_temp_indoor_measured': {
+        label: 'Innenraumtemperatur gemessen',
+        'description': ' Tatsächlich gemessene Innenraumtemperatur in °C. Für diesen Sensor musst du einen Temperatursensor mit Shyft verbinden.'
+    },
+    'electronicvehicle_plugged': {
+        label: 'Verbindungsstatus',
+        description: ' Ja / Nein, je nachdem ob der Ladestecker deiner Wallbox im Auto eingesteckt ist oder nicht.'
+    },
+    'wallbox_current_charging_power': {
+        label: 'Auto - Ladestrom',
+        description: ' Aktueller Ladestrom (in kW)'
+    },
+    'electronicvehicle_state_of_charge': {
+        label: 'EV - SOC',
+        description: ' Ladestand deines Autos (in %)'}
 }
-
-/**
-    Aktueller Strom - Haushalt, Die Leistung (in kW), die dein Haushalt aktuell verbraucht.
-
-    Aktueller Strom - PV, Die aktuelle Leistung (in kW) deiner PV-Anlage.
-
-    Aktueller Strom - Netz, Die aktuelle Leistung (in kW), die dein Haushalt aus dem öffentlichen Stromnetz bezieht bzw. dorthin einspeist.
-
-    Aktueller Strom - Batterie, Die aktuelle Leistung (in kW), mit dem deine Batterie geladen (positiver Wert) oder entladen (negativer Wert) wird.
-
-    Ladestand, Aktueller Ladestand deiner Batterie in Prozent.
-
-    Batterie: Steuerungsmodus, Der Modus, in den deine Batterie versetzt werden kann (z.B. Eigenverbrauchsoptimierung, Netzladen)
-
-Batterie: Aktuelle max. Ladeleistung, Leistung (in kW), die an der Batterie als aktuelle Begrenzung für die Ladeleistung eingestellt ist.
-
-    Batterie: Max. Entladeleistung, Mit wieviel Leistung (in kW) darf deine Batterie höchstens entladen werden?
-
-    Temperatur Warmwassertank, Die aktuelle Temperatur im Warmwassertank (in °C)
-
-Warmwassermodus aktiviert? An/Aus, je nachdem ob an deiner Wärmepumpe die Warmwasserbereitung aktiviert ist oder nicht.
-
-    Warmwasser gerade erwärmt? An / Aus, je nachdem ob deine Wärmepumpe gerade Brauchwasser erwärmt oder nicht.
-
-Zieltemperatur (aktuell), Gewünschte Raumtemperatur in °C, die du an deiner Wärmepumpe einstellst. Über die stündliche Anpassung dieses Werte steuert Shyft die Leistung deiner Wärmepumpe.
-
-    Heizung aktiviert?, Ja / Nein, je nachdem, ob du die Heizung an deiner Wärmepumpe aktiviert hast oder nicht.
-
-    Aktuelle Leistung Wärmepumpe (elektrisch), in kW
-
-Wärmepumpe an/aus, An/Aus, je nachdem ob deine Wärmepumpe gerade läuft oder aus ist.
-
-    Innenraumtemperatur gemessen, Tatsächlich gemessene Innenraumtemperatur in °C. Für diesen Sensor musst du einen Temperatursensor mit Shyft verbinden.
-
-    Verbindungsstatus, Ja / Nein, je nachdem ob der Ladestecker deiner Wallbox im Auto eingesteckt ist oder nicht.
-
-    Auto - Ladestrom, Aktueller Ladestrom (in kW)
-
-EV - SOC, Ladestand deines Autos (in %)
-
-        ]
-
-}
-**/
 
 async function getJson(url) {
     const response = await fetch(url);
@@ -111,7 +138,7 @@ function saveConfiguration() {
         }
         const actorValues = configData["actorMappings"];
 
-        const toBeWritten = {"sensorMappings" : sensorValues, "actorMappings" : actorValues};
+        const toBeWritten = {"sensorMappings": sensorValues, "actorMappings": actorValues};
         await putJson(configUri, toBeWritten);
     }
 }
@@ -141,7 +168,7 @@ function renderSensorMappings(configData) {
     for (const [key, value] of Object.entries(configData)) {
         const row = document.createElement('tr');
         const keyCell = document.createElement('td');
-        const context = helpinformation[key] ?? {'label':key};
+        const context = helpinformation[key] ?? {'label': key};
         const label = context.label;
         keyCell.textContent = label;
 
