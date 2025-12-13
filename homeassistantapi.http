@@ -37,3 +37,9 @@ Content-Type: application/json
 ### GET components
 GET {{ baseUri}}/api/components
 Authorization: Bearer {{ token }}
+
+
+
+### history
+GET {{ baseUri}}/api/history/period
+Authorization: Bearer {{ token }}
