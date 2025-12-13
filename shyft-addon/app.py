@@ -20,7 +20,7 @@ HASSIO_URI = HASSIO_URI_RUNNING_ON_HAOS
 LIST_OF_SENSORS = {
     "photovoltaic_powerflow_pv": "PV - PowerFlow PV",
     "photovoltaic_powerflow_load": "PV - PowerFlow Load",
-    "photovoltaic_powerflow_grid": "SM - PowerFlow Grid",
+    "photovoltaic_powerflow_grid": "PV - PowerFlow Grid",
     "photovoltaic_powerflow_battery": "PV - PowerFlow Battery",
     "battery_storage_command_mode": "B - Storage Command Mode",
     "battery_state_of_charge": "B - SOC",
