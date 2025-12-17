@@ -1,21 +1,23 @@
-import requests
-
 from constants import HOMEASSISTANT_SUPERVISOR_TOKEN, HOMEASSISTANT_URI
+
+from datetime import datetime
+import requests
 
 
 class PeriodElement:
-    def __init__(self, state, unit_of_measurement, timestamp):
+    def __init__(self, state: str, last_changed: datetime):
         self.state = state
-        self.unit_of_measurement = unit_of_measurement
-        self.timestamp = timestamp
+        self.last_changed = last_changed
 
 
 # Adapter for integrating homeassistant
 class HomeAssistantAdapter:
 
-    def __init__(self):
-        self.homeAssistantUri = HOMEASSISTANT_URI
-        self.supervisorToken = HOMEASSISTANT_SUPERVISOR_TOKEN
+    def __init__(self,
+                 homeassistant_uri=HOMEASSISTANT_URI,
+                 supervisor_token=HOMEASSISTANT_SUPERVISOR_TOKEN):
+        self.homeassistant_uri = homeassistant_uri
+        self.supervisor_token = supervisor_token
 
     def loadEntityState(self, sensor_id):
         response = self._getFromHA("/api/states/" + sensor_id)
@@ -23,24 +25,25 @@ class HomeAssistantAdapter:
         return {"state": response["state"],
                 "unit": unit}
 
-    def load_entity_history(self, sensor_id, start_timestamp, end_timestamp):
+    def load_entity_history(self, sensor_id: str,
+                            start_timestamp: datetime,
+                            end_timestamp: datetime):
         response = self._getFromHA(
-            "/api/history/period/" + start_timestamp + "?end_time=" + end_timestamp + "&filter_entity_id=" + sensor_id + "&minimal_response")
+            "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
         result = []
         for response_entry in response:
             for one_period in response_entry:
-                unit = one_period.get("attributes", {}).get("unit_of_measurement", "")
                 state = one_period["state"]
-                last_changed = one_period["last_changed"]
-                result.append(PeriodElement(state, unit, last_changed))
+                last_changed = datetime.fromisoformat(one_period["last_changed"])
+                result.append(PeriodElement(state, last_changed))
 
         return result
 
     def _getFromHA(self, path):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": f"Bearer {self.supervisorToken}"
+            "Authorization": f"Bearer {self.supervisor_token}"
         }
-        completeUri = self.homeAssistantUri + path
+        completeUri = self.homeassistant_uri + path
         response = requests.get(completeUri, headers=headers)
         return response.json()

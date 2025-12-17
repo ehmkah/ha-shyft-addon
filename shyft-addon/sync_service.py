@@ -3,7 +3,7 @@ from shyft_adapter import ShyftAdapter
 from constants import CONFIG_PATH
 
 import json
-import os
+from datetime import datetime, timedelta
 
 LIST_OF_SENSORS = {
     "photovoltaic_powerflow_pv": "PV - PowerFlow PV",
@@ -30,40 +30,22 @@ LIST_OF_SENSORS = {
 # does the mapping between homeassistant and shyft/ bubble
 class SyncService:
 
-    def __init__(self, homeassistantAdapter: HomeAssistantAdapter, shyftAdapter: ShyftAdapter, config_path: str = CONFIG_PATH):
-        self.homeassistant_adapter = homeassistantAdapter
-        self.shyft_adapter = shyftAdapter
+    def __init__(self,
+                 homeassistant_adapter: HomeAssistantAdapter,
+                 shyft_adapter: ShyftAdapter,
+                 config_path: str = CONFIG_PATH):
+        self.homeassistant_adapter = homeassistant_adapter
+        self.shyft_adapter = shyft_adapter
         self.config_path = config_path
 
     def sync_pv_history(self):
-        pass
-        #try:
-        #    LIST_OF_SENSORS
+        config = self._load_config()
+        pv_entity_id = config["sensorMappings"]["photovoltaic_powerflow_pv"]
+        start_timestamp : datetime.datetime = datetime.now()
+        end_timestamp = start_timestamp + timedelta(days=1)
+        pv_history = self.homeassistant_adapter.load_entity_history(pv_entity_id, start_timestamp, end_timestamp)
+        self.shyft_adapter.send_pv_history(pv_history)
 
-            #for key, value in LIST_OF_SENSORS.items():
-            #    valueForSensor = loadSensorValueFor(key, value)
-            #    if valueForSensor != "":
-#                    sensorValues.append(json.dumps(valueForSensor))
-#            payload = ""
-#            if len(sensorValues) > 0:
-#                sensorList = ",".join(sensorValues)
-#                payload = f"{{\"sensor_list\" : [{sensorList}]}}"
-#                headers = {
-#                    "Content-Type": "application/json",
-#                    "Authorization": f"Bearer {SHYFT_ACCESS_KEY}"
-#                }
-#            # external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/obj/homeassistanttest"
-#            external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/wf/addon_pv_history"
-#            response = requests.post(external_url, headers=headers, data=payload)
-#            status_code = response.status_code
-#            return jsonify({
-#                "status": "success",
-#                "payload": payload,
-#                "external_status": status_code})
-#        except Exception as e:
-#            return jsonify({"status": "error", "message": str(e)})
-#
-#
     def _load_config(self):
         with open(self.config_path, "r", encoding="utf-8") as file:
             return json.load(file)
