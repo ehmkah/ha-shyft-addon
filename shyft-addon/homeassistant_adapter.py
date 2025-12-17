@@ -1,5 +1,7 @@
 import requests
 
+from constants import HOMEASSISTANT_SUPERVISOR_TOKEN, HOMEASSISTANT_URI
+
 
 class PeriodElement:
     def __init__(self, state, unit_of_measurement, timestamp):
@@ -11,9 +13,9 @@ class PeriodElement:
 # Adapter for integrating homeassistant
 class HomeAssistantAdapter:
 
-    def __init__(self, homeAssistantUri, supervisorToken):
-        self.homeAssistantUri = homeAssistantUri
-        self.supervisorToken = supervisorToken
+    def __init__(self):
+        self.homeAssistantUri = HOMEASSISTANT_URI
+        self.supervisorToken = HOMEASSISTANT_SUPERVISOR_TOKEN
 
     def loadEntityState(self, sensor_id):
         response = self._getFromHA("/api/states/" + sensor_id)
