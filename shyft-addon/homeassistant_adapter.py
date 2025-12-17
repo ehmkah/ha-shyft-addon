@@ -14,12 +14,13 @@ class PeriodElement:
 class HomeAssistantAdapter:
 
     def __init__(self,
-                 homeassistant_uri=HOMEASSISTANT_URI,
-                 supervisor_token=HOMEASSISTANT_SUPERVISOR_TOKEN):
+                 homeassistant_uri: str = HOMEASSISTANT_URI,
+                 supervisor_token: str = HOMEASSISTANT_SUPERVISOR_TOKEN):
         self.homeassistant_uri = homeassistant_uri
         self.supervisor_token = supervisor_token
 
-    def loadEntityState(self, sensor_id):
+    def load_entity_state(self,
+                          sensor_id: str):
         response = self._getFromHA("/api/states/" + sensor_id)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
         return {"state": response["state"],
