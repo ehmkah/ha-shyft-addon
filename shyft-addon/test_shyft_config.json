@@ -1,0 +1,26 @@
+{
+  "sensorMappings": {
+    "photovoltaic_powerflow_pv": "sensor.heatpump_mock_the_sensor_mock",
+    "photovoltaic_powerflow_load": "",
+    "photovoltaic_powerflow_grid": "",
+    "photovoltaic_powerflow_battery": "",
+    "battery_storage_command_mode": "",
+    "battery_state_of_charge": "",
+    "battery_max_charge_power": "",
+    "battery_max_discharge_power": "",
+    "heatpump_dhw_tank_temp": "",
+    "heatpump_dhw_activated": "",
+    "heatpump_dhw_on_off": "",
+    "heatpump_heating_target_temp_normal": "",
+    "heatpump_heating_activated": "",
+    "heatpump_current_power_elect": "",
+    "heatpump_on_off": "",
+    "heatpump_temp_indoor_measured": "",
+    "electronicvehicle_plugged": "",
+    "electronicvehicle_state_of_charge": "",
+    "wallbox_current_charging_power": ""
+  },
+  "actorMappings": {
+    "heating_on": ""
+  }
+}
