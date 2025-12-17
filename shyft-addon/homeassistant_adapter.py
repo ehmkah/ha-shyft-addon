@@ -26,34 +26,34 @@ class HomeAssistantAdapter:
         self.supervisor_token = supervisor_token
 
     def load_entity_state(self,
-                          sensor_id: str) -> EntityState:
+                          sensor_id: str):
 
-        response = self._getFromHA("/api/states/" + sensor_id)
+        response = self._get_from_homeassistant("/api/states/" + sensor_id)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
 
         return EntityState(response["state"], unit)
 
 
-def load_entity_history(self, sensor_id: str,
-                        start_timestamp: datetime,
-                        end_timestamp: datetime) -> [PeriodElement]:
-    response = self._getFromHA(
-        "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
-    result : [PeriodElement] = []
-    for response_entry in response:
-        for one_period in response_entry:
-            state = one_period["state"]
-            last_changed = datetime.fromisoformat(one_period["last_changed"])
-            result.append(PeriodElement(state, last_changed))
+    def load_entity_history(self, sensor_id: str,
+                            start_timestamp: datetime,
+                            end_timestamp: datetime) -> [PeriodElement]:
+        response = self._get_from_homeassistant(
+            "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
+        result : [PeriodElement] = []
+        for response_entry in response:
+            for one_period in response_entry:
+                state = one_period["state"]
+                last_changed = datetime.fromisoformat(one_period["last_changed"])
+                result.append(PeriodElement(state, last_changed))
 
-    return result
+        return result
 
 
-def _getFromHA(self, path):
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": f"Bearer {self.supervisor_token}"
-    }
-    completeUri = self.homeassistant_uri + path
-    response = requests.get(completeUri, headers=headers)
-    return response.json()
+    def _get_from_homeassistant(self, path):
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": f"Bearer {self.supervisor_token}"
+        }
+        completeUri = self.homeassistant_uri + path
+        response = requests.get(completeUri, headers=headers)
+        return response.json()

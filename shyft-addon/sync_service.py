@@ -44,7 +44,7 @@ class SyncService:
         start_timestamp: datetime.datetime = datetime.now()
         end_timestamp = start_timestamp + timedelta(days=1)
         pv_history = self.homeassistant_adapter.load_entity_history(pv_entity_id, start_timestamp, end_timestamp)
-        self.shyft_adapter.send_pv_history(pv_history)
+        return self.shyft_adapter.send_pv_history(pv_history)
 
     def sync_all_sensors(self):
         sensorValues = []
@@ -69,7 +69,7 @@ class SyncService:
                 "sensor": bubbleSensorIdentifier
             }
         except:
-            return "exception" + key
+            return ""
 
     def _load_config(self):
         with open(self.config_path, "r", encoding="utf-8") as file:

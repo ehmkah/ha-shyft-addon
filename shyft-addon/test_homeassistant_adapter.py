@@ -14,6 +14,6 @@ def test_load_entity_history():
 def test_load_entity_status():
     sut = HomeAssistantAdapter()
     actual = sut.load_entity_state("sensor.heatpump_mock_the_sensor_mock")
-    assert actual["state"] == "10"
-    assert actual["unit"] == "°C"
+    assert actual.state == "10"
+    assert actual.unit == "°C"
 

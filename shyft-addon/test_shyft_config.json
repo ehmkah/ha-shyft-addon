@@ -1,26 +1,26 @@
 {
   "sensorMappings": {
     "photovoltaic_powerflow_pv": "sensor.heatpump_mock_the_sensor_mock",
-    "photovoltaic_powerflow_load": "",
-    "photovoltaic_powerflow_grid": "",
-    "photovoltaic_powerflow_battery": "",
-    "battery_storage_command_mode": "",
-    "battery_state_of_charge": "",
-    "battery_max_charge_power": "",
-    "battery_max_discharge_power": "",
-    "heatpump_dhw_tank_temp": "",
-    "heatpump_dhw_activated": "",
-    "heatpump_dhw_on_off": "",
-    "heatpump_heating_target_temp_normal": "",
-    "heatpump_heating_activated": "",
-    "heatpump_current_power_elect": "",
-    "heatpump_on_off": "",
-    "heatpump_temp_indoor_measured": "",
-    "electronicvehicle_plugged": "",
-    "electronicvehicle_state_of_charge": "",
-    "wallbox_current_charging_power": ""
+    "photovoltaic_powerflow_load": "sensor.heatpump_mock_the_sensor_mock",
+    "photovoltaic_powerflow_grid": "sensor.heatpump_mock_the_sensor_mock",
+    "photovoltaic_powerflow_battery": "sensor.heatpump_mock_the_sensor_mock",
+    "battery_storage_command_mode": "sensor.heatpump_mock_the_sensor_mock",
+    "battery_state_of_charge": "sensor.heatpump_mock_the_sensor_mock",
+    "battery_max_charge_power": "sensor.heatpump_mock_the_sensor_mock",
+    "battery_max_discharge_power": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_dhw_tank_temp": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_dhw_activated": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_dhw_on_off": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_heating_target_temp_normal": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_heating_activated": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_current_power_elect": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_on_off": "sensor.heatpump_mock_the_sensor_mock",
+    "heatpump_temp_indoor_measured": "sensor.heatpump_mock_the_sensor_mock",
+    "electronicvehicle_plugged": "sensor.heatpump_mock_the_sensor_mock",
+    "electronicvehicle_state_of_charge": "sensor.heatpump_mock_the_sensor_mock",
+    "wallbox_current_charging_power": "sensor.heatpump_mock_the_sensor_mock"
   },
   "actorMappings": {
-    "heating_on": ""
+    "heating_on": "sensor.heatpump_mock_the_sensor_mock"
   }
 }

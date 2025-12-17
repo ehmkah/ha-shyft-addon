@@ -1,12 +1,15 @@
+from sync_service import SyncService
+
+
 import os
 from flask import Flask, send_from_directory, jsonify, request
 import threading, time
 import requests
 import json
-import datetime
 import shutil
 
 app = Flask(__name__, static_folder="www", static_url_path="")
+sync_service = SyncService()
 SHYFT_ACCESS_KEY = "not_set_yet"
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
@@ -17,67 +20,21 @@ HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
 # HASSIO_URI = HASSIO_URI_RUNNING_REMOTE
 HASSIO_URI = HASSIO_URI_RUNNING_ON_HAOS
 
-LIST_OF_SENSORS = {
-    "photovoltaic_powerflow_pv": "PV - PowerFlow PV",
-    "photovoltaic_powerflow_load": "PV - PowerFlow Load",
-    "photovoltaic_powerflow_grid": "PV - PowerFlow Grid",
-    "photovoltaic_powerflow_battery": "PV - PowerFlow Battery",
-    "battery_storage_command_mode": "B - Storage Command Mode",
-    "battery_state_of_charge": "B - SOC",
-    "battery_max_charge_power": "B - Max Charge Power",
-    "battery_max_discharge_power": "B - Max Discharge Power",
-    "heatpump_dhw_tank_temp": "HP - DHW Tank Temp",
-    "heatpump_dhw_activated": "HP - DHW Activated",
-    "heatpump_dhw_on_off": "HP - DHW on/off",
-    "heatpump_heating_target_temp_normal": "HP - Heating Target Temp (normal)",
-    "heatpump_heating_activated": "HP - Heating Activated",
-    "heatpump_current_power_elect": "HP - Current Power (elect)",
-    "heatpump_on_off": "HP - On/Off",
-    "heatpump_temp_indoor_measured": "HP - Temp Indoor measured",
-    "electronicvehicle_plugged": "EV - Plugged",
-    "electronicvehicle_state_of_charge": "EV - SOC",
-    "wallbox_current_charging_power": "WB - Current Charging Power"
-}
-
-
 # Serve the static HTML
 @app.route("/")
 def index():
     return send_from_directory("www", "index.html")
 
-
 # Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
 def triggerEndpoint():
-    return trigger()
+    return syncSensors()
 
+def syncSensors():
+    return sync_service.syncSensors()
 
-def trigger():
-    try:
-        sensorValues = []
-        for key, value in LIST_OF_SENSORS.items():
-            valueForSensor = loadSensorValueFor(key, value)
-            if valueForSensor != "":
-                sensorValues.append(json.dumps(valueForSensor))
-        payload="";
-        if len(sensorValues) > 0:
-            sensorList = ",".join(sensorValues)
-            payload = f"{{\"sensor_list\" : [{sensorList}]}}"
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {SHYFT_ACCESS_KEY}"
-            }
-        #external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/obj/homeassistanttest"
-        external_url = "https://anselmhuewe.bubbleapps.io/version-test/api/1.1/wf/addon_sensor_data"
-        response = requests.post(external_url, headers=headers, data=payload)
-        status_code = response.status_code
-        return jsonify({
-            "status": "success",
-            "payload": payload,
-            "external_status": status_code})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
-
+def syncPVHistory():
+    return sync_service.syncPVHistory()
 
 @app.route("/config", methods=["GET"])
 def readConfig():
@@ -135,22 +92,6 @@ def loadSensorValueFor(key, bubbleSensorIdentifier):
         return "exception" + key
 
 
-def loadEntityState(sensorId):
-    response = getFromHA("/api/states/" + sensorId)
-    unit = response.get("attributes", {}).get("unit_of_measurement", "")
-    return {"state": response["state"],
-            "unit" : unit}
-
-def getFromHA(path):
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": f"Bearer {SUPERVISOR_TOKEN}"
-    }
-    completeUri = HASSIO_URI + path
-    response = requests.get(completeUri, headers=headers)
-    return response.json()
-
-
 def postToHA(path, body):
     headers = {
         "Content-Type": "application/json",
@@ -164,12 +105,12 @@ def postToHA(path, body):
 def callBubblePeriodically():
     while True:
         with app.app_context():
-            trigger()
+            syncSensors()
         time.sleep(UPDATE_INTERVALL_IN_SECONDS)
 
 
-thread = threading.Thread(target=callBubblePeriodically, daemon=True)
-thread.start()
+# thread = threading.Thread(target=callBubblePeriodically, daemon=True)
+# thread.start()
 
 if __name__ == "__main__":
     try:
@@ -184,6 +125,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         print("Failed to load config from options.json:", e)
+
 
     print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
     print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)

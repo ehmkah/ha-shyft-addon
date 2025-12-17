@@ -10,8 +10,11 @@ def sut():
                        ShyftAdapter(bubble_token="XXXX"),
                        "shyft-addon/test_shyft_config.json")
 
-def test_trigger_pv_history(sut):
+def test_sync_pv_history(sut):
     sut.sync_pv_history()
+
+def test_sync_all_sensors(sut):
+    sut.sync_all_sensors()
 
 def test_load_config(sut):
     actual = sut._load_config()
