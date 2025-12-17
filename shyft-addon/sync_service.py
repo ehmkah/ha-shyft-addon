@@ -41,10 +41,35 @@ class SyncService:
     def sync_pv_history(self):
         config = self._load_config()
         pv_entity_id = config["sensorMappings"]["photovoltaic_powerflow_pv"]
-        start_timestamp : datetime.datetime = datetime.now()
+        start_timestamp: datetime.datetime = datetime.now()
         end_timestamp = start_timestamp + timedelta(days=1)
         pv_history = self.homeassistant_adapter.load_entity_history(pv_entity_id, start_timestamp, end_timestamp)
         self.shyft_adapter.send_pv_history(pv_history)
+
+    def sync_all_sensors(self):
+        sensorValues = []
+        data = self._load_config()
+        for key, value in LIST_OF_SENSORS.items():
+            valueForSensor = self._load_sensor_value(key, value, data)
+            if valueForSensor != "":
+                sensorValues.append(json.dumps(valueForSensor))
+        if len(sensorValues) > 0:
+            sensorList = ",".join(sensorValues)
+            payload = f"{{\"sensor_list\" : [{sensorList}]}}"
+            return self.shyft_adapter.send_sensor_values(payload)
+
+    def _load_sensor_value(self, key, bubbleSensorIdentifier, data):
+        sensorId = data["sensorMappings"][key]
+        try:
+            sensorValue = self.homeassistant_adapter.load_entity_state(sensorId)
+            return {
+                "entity_id": key,
+                "state": sensorValue.state,
+                "unit": sensorValue.unit,
+                "sensor": bubbleSensorIdentifier
+            }
+        except:
+            return "exception" + key
 
     def _load_config(self):
         with open(self.config_path, "r", encoding="utf-8") as file:

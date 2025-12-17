@@ -17,8 +17,13 @@ class ShyftAdapter:
     def send_pv_history(self,
                         pv_history: [PeriodElement]):
         payload = self._map_to_json(pv_history)
-
         return self._call_workflow("addon_pv_history", payload)
+
+    def send_sensor_values(self,
+                           sensor_values):
+        payload = self._map_sensor_values_to_json(sensor_values)
+        return self._call_workflow("addon_sensor_data", payload)
+
 
     def _call_workflow(self,
                        workflow_name: str,
