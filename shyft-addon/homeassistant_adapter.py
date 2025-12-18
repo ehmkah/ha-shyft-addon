@@ -28,7 +28,7 @@ class HomeAssistantAdapter:
     def load_entity_state(self,
                           sensor_id: str):
 
-        response = self._get_from_homeassistant("/api/states/" + sensor_id)
+        response = self.get_from_homeassistant("/api/states/" + sensor_id)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
 
         return EntityState(response["state"], unit)
@@ -37,7 +37,7 @@ class HomeAssistantAdapter:
     def load_entity_history(self, sensor_id: str,
                             start_timestamp: datetime,
                             end_timestamp: datetime) -> [PeriodElement]:
-        response = self._get_from_homeassistant(
+        response = self.get_from_homeassistant(
             "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
         result : [PeriodElement] = []
         for response_entry in response:
@@ -49,7 +49,7 @@ class HomeAssistantAdapter:
         return result
 
 
-    def _get_from_homeassistant(self, path):
+    def get_from_homeassistant(self, path):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Bearer {self.supervisor_token}"

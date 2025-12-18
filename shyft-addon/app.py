@@ -1,19 +1,22 @@
 from sync_service import SyncService
-
+from homeassistant_adapter import HomeAssistantAdapter
+from shyft_adapter import ShyftAdapter
 
 import os
 from flask import Flask, send_from_directory, jsonify, request
-import threading, time
+import time
 import requests
 import json
 import shutil
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__, static_folder="www", static_url_path="")
-sync_service = SyncService()
+homeassistant_adapter = HomeAssistantAdapter()
+shyft_adapter = ShyftAdapter()
+sync_service = SyncService(homeassistant_adapter, shyft_adapter)
 SHYFT_ACCESS_KEY = "not_set_yet"
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
-UPDATE_INTERVALL_IN_SECONDS = 3600
 SUPERVISOR_TOKEN = value = os.getenv("SUPERVISOR_TOKEN")
 HASSIO_URI_RUNNING_ON_HAOS = "http://supervisor/core"
 HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
@@ -28,13 +31,15 @@ def index():
 # Delivers data to bubble
 @app.route("/trigger", methods=["POST"])
 def triggerEndpoint():
-    return syncSensors()
+    return sync_sensors()
 
-def syncSensors():
-    return sync_service.syncSensors()
+def sync_sensors():
+    "Step 1 04 hourly run ha addon"
+    return sync_service.sync_all_sensors()
 
-def syncPVHistory():
-    return sync_service.syncPVHistory()
+def sync_pv_history():
+    "Step01 pv history addon"
+    return sync_service.sync_pv_history()
 
 @app.route("/config", methods=["GET"])
 def readConfig():
@@ -47,7 +52,7 @@ def readConfig():
 
 @app.route("/sensorids", methods=["GET"])
 def readSensorIds():
-    response = getFromHA("/api/states")
+    response = homeassistant_adapter.get_from_homeassistant("/api/states")
     return mapToResponse(response)
 
 
@@ -75,23 +80,6 @@ def writeConfig():
 
     return result
 
-
-def loadSensorValueFor(key, bubbleSensorIdentifier):
-    with open(CONFIG_PATH, "r", encoding="utf-8") as file:
-        data = json.load(file)
-    sensorId = data["sensorMappings"][key]
-    try:
-        sensorValue = loadEntityState(sensorId)
-        return {
-            "entity_id": key,
-            "state": sensorValue["state"],
-            "unit": sensorValue["unit"],
-            "sensor": bubbleSensorIdentifier
-        }
-    except:
-        return "exception" + key
-
-
 def postToHA(path, body):
     headers = {
         "Content-Type": "application/json",
@@ -102,15 +90,20 @@ def postToHA(path, body):
     return response.json()
 
 
-def callBubblePeriodically():
-    while True:
-        with app.app_context():
-            syncSensors()
-        time.sleep(UPDATE_INTERVALL_IN_SECONDS)
+def sync_sensors_periodically():
+    with app.app_context():
+        sync_sensors()
+
+def sync_pv_history_periodically():
+    with app.app_context():
+        sync_pv_history()
 
 
-# thread = threading.Thread(target=callBubblePeriodically, daemon=True)
-# thread.start()
+scheduler = BackgroundScheduler()
+scheduler.add_job(sync_sensors_periodically, 'cron', minute="55")
+scheduler.add_job(sync_pv_history_periodically, 'cron', hour="21", minute="0")
+scheduler.start()
+
 
 if __name__ == "__main__":
     try:
@@ -126,6 +119,7 @@ if __name__ == "__main__":
     except Exception as e:
         print("Failed to load config from options.json:", e)
 
+    shyft_adapter.bubble_token = SHYFT_ACCESS_KEY;
 
     print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
     print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)

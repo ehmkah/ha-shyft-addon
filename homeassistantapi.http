@@ -38,8 +38,14 @@ Content-Type: application/json
 GET {{ baseUri}}/api/components
 Authorization: Bearer {{ token }}
 
-
-
 ### history
-GET {{ baseUri}}/api/history/period
+GET {{ baseUri}}/api/history/period/
 Authorization: Bearer {{ token }}
+
+### history for virtualbox
+# sensor.heatpump_mock_the_sensor_mock
+GET {{ baseUri}}/api/history/period/2025-12-06T20%3A31%3A00?end_time=2025-12-31T21%3A31%3A00&filter_entity_id=sensor.heatpump_mock_the_sensor_mock&minimal_response
+Authorization: Bearer {{ token }}
+
+
+
