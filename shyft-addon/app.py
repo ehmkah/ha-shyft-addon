@@ -4,24 +4,27 @@ from shyft_adapter import ShyftAdapter
 
 import os
 from flask import Flask, send_from_directory, jsonify, request
-import time
 import requests
 import json
 import shutil
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__, static_folder="www", static_url_path="")
-homeassistant_adapter = HomeAssistantAdapter()
-shyft_adapter = ShyftAdapter()
-sync_service = SyncService(homeassistant_adapter, shyft_adapter)
+
 SHYFT_ACCESS_KEY = "not_set_yet"
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
-SUPERVISOR_TOKEN = value = os.getenv("SUPERVISOR_TOKEN")
+SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
 HASSIO_URI_RUNNING_ON_HAOS = "http://supervisor/core"
 HASSIO_URI_RUNNING_REMOTE = "http://homeassistant.local:8123"
 # HASSIO_URI = HASSIO_URI_RUNNING_REMOTE
 HASSIO_URI = HASSIO_URI_RUNNING_ON_HAOS
+
+homeassistant_adapter = HomeAssistantAdapter(
+    homeassistant_uri=HASSIO_URI_RUNNING_ON_HAOS,
+    supervisor_token=SUPERVISOR_TOKEN)
+shyft_adapter = ShyftAdapter()
+sync_service = SyncService(homeassistant_adapter, shyft_adapter)
 
 # Serve the static HTML
 @app.route("/")

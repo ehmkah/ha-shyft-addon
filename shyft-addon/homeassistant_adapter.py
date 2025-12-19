@@ -1,4 +1,4 @@
-from constants import HOMEASSISTANT_SUPERVISOR_TOKEN, HOMEASSISTANT_URI
+from constants import HOMEASSISTANT_URI
 
 from datetime import datetime
 import requests
@@ -20,8 +20,8 @@ class EntityState:
 class HomeAssistantAdapter:
 
     def __init__(self,
-                 homeassistant_uri: str = HOMEASSISTANT_URI,
-                 supervisor_token: str = HOMEASSISTANT_SUPERVISOR_TOKEN):
+                 supervisor_token: str,
+                 homeassistant_uri: str = HOMEASSISTANT_URI):
         self.homeassistant_uri = homeassistant_uri
         self.supervisor_token = supervisor_token
 
@@ -57,8 +57,7 @@ class HomeAssistantAdapter:
         completeUri = self.homeassistant_uri + path
         response = requests.get(completeUri, headers=headers)
         try:
-            raise Exception("testen")
             return response.json()
-        except Exception as e:
+        except:
             raise Exception(response.text)
 
