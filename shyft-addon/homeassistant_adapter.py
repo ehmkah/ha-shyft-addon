@@ -56,4 +56,9 @@ class HomeAssistantAdapter:
         }
         completeUri = self.homeassistant_uri + path
         response = requests.get(completeUri, headers=headers)
-        return response.json()
+        try:
+            raise Exception("testen")
+            return response.json()
+        except Exception as e:
+            raise Exception(response.text)
+
