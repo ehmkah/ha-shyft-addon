@@ -179,7 +179,8 @@ function renderSensorMappings(configData) {
         tooltip.appendChild(tooltipIcon);
         const tooltipText = document.createElement("span");
         tooltipText.className = 'tooltip-text';
-        tooltipText.textContent = 'Use 4–12 characters, letters or numbers.';
+        const tooltipFromConfig = helpinformation[key] ?? {'description': key};
+        tooltipText.textContent = tooltipFromConfig.description;
         tooltip.appendChild(tooltipText);
         keyCell.appendChild(tooltip);
 
