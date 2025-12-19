@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def sut():
-    return SyncService(HomeAssistantAdapter(),
+    return SyncService(HomeAssistantAdapter(supervisor_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlOGQyNjEwZmMwOWQ0MzY3OTQ5YzcyZDc4ZjA2MzliMyIsImlhdCI6MTc2MDA5Njc2NiwiZXhwIjoyMDc1NDU2NzY2fQ.uzrb_9GI--oKn6Wt6Oopz-lweUWXV0Q4ABbwxmAiiJo"),
                        ShyftAdapter(bubble_token="XXXX"),
                        "shyft-addon/test_shyft_config.json")
 
