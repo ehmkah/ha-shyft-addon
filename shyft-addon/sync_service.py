@@ -65,7 +65,7 @@ class SyncService:
         try:
             sensorValue = self.homeassistant_adapter.load_entity_state(sensorId)
             return {
-                "entity_id": key,
+                "entity_id": sensorId,
                 "state": sensorValue.state,
                 "unit": sensorValue.unit,
                 "sensor": bubbleSensorIdentifier
