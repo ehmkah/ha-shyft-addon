@@ -60,6 +60,10 @@
             border-color: #333 transparent transparent transparent;
         }
 
+        .tableHeaderCell {
+            padding-bottom: 2em;
+        }
+
         .tooltip:hover .tooltip-text {
             opacity: 1;
             visibility: visible;
@@ -85,8 +89,8 @@
     <table id="sensorMappingTable">
         <thead>
         <tr>
-            <th>Shyft-Sensor</th>
-            <th>Home Assistant Entity ID</th>
+            <th class="tableHeaderCell">Shyft-Sensor</th>
+            <th class="tableHeaderCell">Home Assistant Entity ID</th>
         </tr>
         </thead>
         <tbody id="sensorMappingId"/>
