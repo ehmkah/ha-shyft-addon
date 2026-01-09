@@ -29,29 +29,29 @@ const helpinformation = {
         label: 'Batterie: Steuerungsmodus',
         'description': ' Der Modus, in den deine Batterie versetzt werden kann (z.B. Eigenverbrauchsoptimierung, Netzladen)'
     },
-    'battery_max_charge_power': {
+    'battery_charge_limit_current': {
         label: 'Batterie: Aktuelle max. Ladeleistung',
-        description: ' Leistung (in kW), die an der Batterie als aktuelle Begrenzung für die Ladeleistung eingestellt ist.'
+        description: 'Leistung (in kW), die an der Batterie als aktuelle Begrenzung für die Ladeleistung eingestellt ist.'
     },
-    'battery_max_discharge_power': {
-        label: 'Batterie: Max. Entladeleistung',
-        'description': ' Mit wieviel Leistung (in kW) darf deine Batterie höchstens entladen werden?'
+    'battery_discharge_limit_current': {
+        label: 'Batterie: Aktuelle max. Entladeleistung',
+        description: ' Leistung (in kW), die an der Batterie als aktuelle Begrenzung für die Entladeleistung eingestellt ist.'
     },
     'heatpump_dhw_tank_temp': {
         label: 'Temperatur Warmwassertank',
-        'description': ' Die aktuelle Temperatur im Warmwassertank (in °C)'
+        description: ' Die aktuelle Temperatur im Warmwassertank (in °C)'
     },
     'heatpump_dhw_activated': {
         label: 'Warmwassermodus aktiviert? An/Aus',
-        'description': ' je nachdem ob an deiner Wärmepumpe die Warmwasserbereitung aktiviert ist oder nicht.'
+        description: ' je nachdem ob an deiner Wärmepumpe die Warmwasserbereitung aktiviert ist oder nicht.'
     },
     'heatpump_dhw_on_off': {
         label: 'Warmwasser gerade erwärmt? An / Aus',
-        'description': ' je nachdem ob deine Wärmepumpe gerade Brauchwasser erwärmt oder nicht.'
+        description: ' je nachdem ob deine Wärmepumpe gerade Brauchwasser erwärmt oder nicht.'
     },
     'heatpump_heating_target_temp_normal': {
         label: 'Zieltemperatur (aktuell)',
-        'description': ' Gewünschte Raumtemperatur in °C, die du an deiner Wärmepumpe einstellst. Über die stündliche Anpassung dieses Werte steuert Shyft die Leistung deiner Wärmepumpe.'
+        description: ' Gewünschte Raumtemperatur in °C, die du an deiner Wärmepumpe einstellst. Über die stündliche Anpassung dieses Werte steuert Shyft die Leistung deiner Wärmepumpe.'
     },
     'heatpump_heating_activated': {
         label: 'Heizung aktiviert?',
@@ -63,24 +63,33 @@ const helpinformation = {
     },
     'heatpump_on_off': {
         label: 'Wärmepumpe an/aus',
-        'description': ' An/Aus, je nachdem ob deine Wärmepumpe gerade läuft oder aus ist.'
+        description: ' An/Aus, je nachdem ob deine Wärmepumpe gerade läuft oder aus ist.'
     },
     'heatpump_temp_indoor_measured': {
         label: 'Innenraumtemperatur gemessen',
-        'description': ' Tatsächlich gemessene Innenraumtemperatur in °C. Für diesen Sensor musst du einen Temperatursensor mit Shyft verbinden.'
+        description: ' Tatsächlich gemessene Innenraumtemperatur in °C. Für diesen Sensor musst du einen Temperatursensor mit Shyft verbinden.'
+    },
+    'heatpump_supply_temp_hp': {
+        label: 'Vorlauftemperatur Wärmepumpe',
+        description: 'Die Vorlauftemperatur deiner Wärmepumpe'
     },
     'electronicvehicle_plugged': {
-        label: 'Verbindungsstatus',
-        description: ' Ja / Nein, je nachdem ob der Ladestecker deiner Wallbox im Auto eingesteckt ist oder nicht.'
-    },
-    'wallbox_current_charging_power': {
-        label: 'Auto - Ladestrom',
-        description: ' Aktueller Ladestrom (in kW)'
+        label: 'Auto verbunden?',
+        description: 'Ja / Nein, je nachdem ob dein Auto eine Verbindung mit der Wallbox meldet oder nicht.'
     },
     'electronicvehicle_state_of_charge': {
-        label: 'EV - SOC',
+        label: 'Auto - Ladestand',
         description: ' Ladestand deines Autos (in %)'
-    }
+    },
+    'wallbox_current_charging_power': {
+        label: 'Wallbox - Ladestrom',
+        description: ' Aktueller Ladestrom (in kW)'
+    },
+    'wallbox_plugged': {
+        label: 'Wallbox: Auto verbunden?',
+        description: 'Ja / Nein, je nachdem ob der Ladestecker deiner Wallbox im Auto eingesteckt ist oder nicht.'
+    },
+
 }
 
 async function getJson(url) {
