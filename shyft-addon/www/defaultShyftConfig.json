@@ -6,8 +6,8 @@
     "photovoltaic_powerflow_battery": "",
     "battery_storage_command_mode": "",
     "battery_state_of_charge": "",
-    "battery_max_charge_power": "",
-    "battery_max_discharge_power": "",
+    "battery_charge_limit_current": "",
+    "battery_discharge_limit_current": "",
     "heatpump_dhw_tank_temp": "",
     "heatpump_dhw_activated": "",
     "heatpump_dhw_on_off": "",
@@ -15,10 +15,12 @@
     "heatpump_heating_activated": "",
     "heatpump_current_power_elect": "",
     "heatpump_on_off": "",
+    "heatpump_supply_temp_hp" : "",
     "heatpump_temp_indoor_measured": "",
     "electronicvehicle_plugged": "",
     "electronicvehicle_state_of_charge": "",
-    "wallbox_current_charging_power": ""
+    "wallbox_current_charging_power": "",
+    "wallbox_plugged": ""
   },
   "actorMappings": {
     "heating_on": ""

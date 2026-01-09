@@ -12,19 +12,21 @@ LIST_OF_SENSORS = {
     "photovoltaic_powerflow_battery": "PV - PowerFlow Battery",
     "battery_storage_command_mode": "B - Storage Command Mode",
     "battery_state_of_charge": "B - SOC",
-    "battery_max_charge_power": "B - Max Charge Power",
-    "battery_max_discharge_power": "B - Max Discharge Power",
+    "battery_charge_limit_current": "B - Charge Limit (current)",
+    "battery_discharge_limit_current": "B - Discharge Limit (current)",
     "heatpump_dhw_tank_temp": "HP - DHW Tank Temp",
     "heatpump_dhw_activated": "HP - DHW Activated",
     "heatpump_dhw_on_off": "HP - DHW on/off",
     "heatpump_heating_target_temp_normal": "HP - Heating Target Temp (normal)",
     "heatpump_heating_activated": "HP - Heating Activated",
     "heatpump_current_power_elect": "HP - Current Power (elect)",
+    "heatpump_supply_temp_hp": "HP - Supply Temp HP",
     "heatpump_on_off": "HP - On/Off",
     "heatpump_temp_indoor_measured": "HP - Temp Indoor measured",
     "electronicvehicle_plugged": "EV - Plugged",
     "electronicvehicle_state_of_charge": "EV - SOC",
-    "wallbox_current_charging_power": "WB - Current Charging Power"
+    "wallbox_current_charging_power": "WB - Current Charging Power",
+    "wallbox_plugged": "WB - Plugged"
 }
 
 # does the mapping between homeassistant and shyft/ bubble
