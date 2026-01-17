@@ -28,5 +28,5 @@ def test_map_to_period_element():
     actual = sut._map_to_period_element(given_period_element)
 
     ## THEN
-    print("HUHU")
+
 

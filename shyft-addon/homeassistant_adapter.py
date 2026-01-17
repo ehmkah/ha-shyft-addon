@@ -31,10 +31,11 @@ class HomeAssistantAdapter:
     def load_entity_state(self,
                           sensor_id: str):
 
-        response = self.get_from_homeassistant("/api/states/" + sensor_id)
+        query = "/api/states/" + sensor_id
+        self._log_info("load_entity_state query " + query)
+        response = self.get_from_homeassistant(query)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
-        self._log_info("load_entity_state")
-
+        self._log_info("load_entity_state result " + str(response))
         return EntityState(response["state"], unit)
 
     def load_entity_history(self, sensor_id: str,
@@ -49,7 +50,6 @@ class HomeAssistantAdapter:
     def _log_info(self, log_message: str):
         if self.detailed_logging:
             logger.info(log_message)
-
 
     def _map_to_period_element(self, response) -> [PeriodElement]:
         result: [PeriodElement] = []
@@ -71,4 +71,3 @@ class HomeAssistantAdapter:
             return response.json()
         except:
             raise Exception(response.text)
-
