@@ -41,8 +41,10 @@ class HomeAssistantAdapter:
     def load_entity_history(self, sensor_id: str,
                             start_timestamp: datetime,
                             end_timestamp: datetime) -> [PeriodElement]:
-        response = self.get_from_homeassistant(
-            "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
+        query = "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response"
+        self._log_info("load_entity_history query " + query)
+        response = self.get_from_homeassistant(query)
+        self._log_info("load_entity_history result " + str(response))
         result = self._map_to_period_element(response)
 
         return result
