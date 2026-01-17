@@ -129,7 +129,7 @@ if __name__ == "__main__":
         print("Failed to load config from options.json:", e)
 
     shyft_adapter.bubble_token = SHYFT_ACCESS_KEY;
-
+    homeassistant_adapter.detailed_logging = DETAILED_LOGGING
     print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
     print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)
     print("Detailed logging:", DETAILED_LOGGING)

@@ -26,16 +26,16 @@ class HomeAssistantAdapter:
                  homeassistant_uri: str = HOMEASSISTANT_URI):
         self.homeassistant_uri = homeassistant_uri
         self.supervisor_token = supervisor_token
+        self.detailed_logging = False
 
     def load_entity_state(self,
                           sensor_id: str):
 
         response = self.get_from_homeassistant("/api/states/" + sensor_id)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
-        logger.info("load_entity_state")
+        self._log_info("load_entity_state")
 
         return EntityState(response["state"], unit)
-
 
     def load_entity_history(self, sensor_id: str,
                             start_timestamp: datetime,
@@ -45,6 +45,11 @@ class HomeAssistantAdapter:
         result = self._map_to_period_element(response)
 
         return result
+
+    def _log_info(self, log_message: str):
+        if self.detailed_logging:
+            logger.info(log_message)
+
 
     def _map_to_period_element(self, response) -> [PeriodElement]:
         result: [PeriodElement] = []
