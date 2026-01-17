@@ -1,6 +1,7 @@
 from homeassistant_adapter import HomeAssistantAdapter, PeriodElement
 
 from datetime import datetime
+from file_utils import read_file_to_json
 
 def test_load_entity_history():
     sut = HomeAssistantAdapter(supervisor_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlOGQyNjEwZmMwOWQ0MzY3OTQ5YzcyZDc4ZjA2MzliMyIsImlhdCI6MTc2MDA5Njc2NiwiZXhwIjoyMDc1NDU2NzY2fQ.uzrb_9GI--oKn6Wt6Oopz-lweUWXV0Q4ABbwxmAiiJo")
@@ -16,4 +17,16 @@ def test_load_entity_status():
     actual = sut.load_entity_state("sensor.heatpump_mock_the_sensor_mock")
     assert actual.state == "10"
     assert actual.unit == "°C"
+
+def test_map_to_period_element():
+    # given
+    sut = HomeAssistantAdapter(
+        supervisor_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlOGQyNjEwZmMwOWQ0MzY3OTQ5YzcyZDc4ZjA2MzliMyIsImlhdCI6MTc2MDA5Njc2NiwiZXhwIjoyMDc1NDU2NzY2fQ.uzrb_9GI--oKn6Wt6Oopz-lweUWXV0Q4ABbwxmAiiJo")
+    given_period_element = read_file_to_json("shyft-addon/entity_history_test_data_001.json")
+
+    # WHEN
+    actual = sut._map_to_period_element(given_period_element)
+
+    ## THEN
+
 
