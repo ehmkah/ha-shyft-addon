@@ -12,6 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 app = Flask(__name__, static_folder="www", static_url_path="")
 
 SHYFT_ACCESS_KEY = "not_set_yet"
+DETAILED_LOGGING = False
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
 SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
@@ -113,6 +114,7 @@ if __name__ == "__main__":
         with open(OPTIONS_PATH, "r") as f:
             options = json.load(f)
             SHYFT_ACCESS_KEY = options.get("shyft_access_key", SHYFT_ACCESS_KEY)
+            DETAILED_LOGGING = options.get("detailed_logging", DETAILED_LOGGING)
         if not os.path.exists(CONFIG_PATH):
             print("File does not exists")
             shutil.copy("www/defaultShyftConfig.json", CONFIG_PATH)
@@ -126,4 +128,6 @@ if __name__ == "__main__":
 
     print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
     print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)
+    print("Detailed logging:", DETAILED_LOGGING)
+
     app.run(host="0.0.0.0", port=8080)

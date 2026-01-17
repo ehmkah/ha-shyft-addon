@@ -39,15 +39,18 @@ class HomeAssistantAdapter:
                             end_timestamp: datetime) -> [PeriodElement]:
         response = self.get_from_homeassistant(
             "/api/history/period/" + start_timestamp.isoformat() + "?end_time=" + end_timestamp.isoformat() + "&filter_entity_id=" + sensor_id + "&minimal_response")
-        result : [PeriodElement] = []
+        result = self._map_to_period_element(response)
+
+        return result
+
+    def _map_to_period_element(self, response) -> [PeriodElement]:
+        result: [PeriodElement] = []
         for response_entry in response:
             for one_period in response_entry:
                 state = one_period["state"]
                 last_changed = datetime.fromisoformat(one_period["last_changed"])
                 result.append(PeriodElement(state, last_changed))
-
         return result
-
 
     def get_from_homeassistant(self, path):
         headers = {
