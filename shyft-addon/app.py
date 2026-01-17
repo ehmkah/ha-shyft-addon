@@ -8,7 +8,11 @@ import requests
 import json
 import shutil
 from apscheduler.schedulers.background import BackgroundScheduler
+import logging
+import sys
 
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 app = Flask(__name__, static_folder="www", static_url_path="")
 
 SHYFT_ACCESS_KEY = "not_set_yet"

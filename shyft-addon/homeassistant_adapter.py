@@ -2,7 +2,9 @@ from constants import HOMEASSISTANT_URI
 
 from datetime import datetime
 import requests
+import logging
 
+logger = logging.getLogger(__name__)
 
 class PeriodElement:
     def __init__(self, state: str, last_changed: datetime):
@@ -30,6 +32,7 @@ class HomeAssistantAdapter:
 
         response = self.get_from_homeassistant("/api/states/" + sensor_id)
         unit = response.get("attributes", {}).get("unit_of_measurement", "")
+        logger.info("load_entity_state")
 
         return EntityState(response["state"], unit)
 
