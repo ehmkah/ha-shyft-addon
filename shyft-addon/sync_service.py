@@ -43,8 +43,8 @@ class SyncService:
     def sync_pv_history(self):
         config = self._load_config()
         pv_entity_id = config["sensorMappings"]["photovoltaic_powerflow_pv"]
-        start_timestamp: datetime.datetime = datetime.now()
-        end_timestamp = start_timestamp + timedelta(days=1)
+        end_timestamp: datetime.datetime = datetime.now()
+        start_timestamp: datetime.datetime = end_timestamp - timedelta(days=1)
         pv_history = self.homeassistant_adapter.load_entity_history(pv_entity_id, start_timestamp, end_timestamp)
         return self.shyft_adapter.send_pv_history(pv_history)
 
