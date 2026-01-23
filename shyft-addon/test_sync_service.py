@@ -3,6 +3,7 @@ from homeassistant_adapter import HomeAssistantAdapter
 from shyft_adapter import ShyftAdapter
 
 import pytest
+from datetime import datetime
 
 @pytest.fixture
 def sut():
@@ -19,3 +20,15 @@ def test_sync_all_sensors(sut):
 def test_load_config(sut):
     actual = sut._load_config()
     assert actual["sensorMappings"]["photovoltaic_powerflow_pv"] == "sensor.heatpump_mock_the_sensor_mock"
+
+def test_calculate_dates_01(sut):
+    given_now = datetime(2026, 1, 23, hour=21, minute=0)
+    actual = sut._calculate_dates(given_now)
+    assert actual["end_timestamp"] == datetime(2026, 1, 23, hour=21, minute=0)
+    assert actual["start_timestamp"] == datetime(2026, 1, 23, hour=4, minute=0)
+
+def test_calculate_dates_02(sut):
+    given_now = datetime(2026, 1, 23, hour=3, minute=0)
+    actual = sut._calculate_dates(given_now)
+    assert actual["end_timestamp"] == datetime(2026, 1, 23, hour=3, minute=0)
+    assert actual["start_timestamp"] == datetime(2026, 1, 22, hour=4, minute=0)
