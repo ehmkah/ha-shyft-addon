@@ -17,6 +17,7 @@ app = Flask(__name__, static_folder="www", static_url_path="")
 
 SHYFT_ACCESS_KEY = "not_set_yet"
 DETAILED_LOGGING = False
+DEVELOPMENT_MODE = False
 OPTIONS_PATH = "/data/options.json"
 CONFIG_PATH = "/data/config.json"
 SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
@@ -119,6 +120,7 @@ if __name__ == "__main__":
             options = json.load(f)
             SHYFT_ACCESS_KEY = options.get("shyft_access_key", SHYFT_ACCESS_KEY)
             DETAILED_LOGGING = options.get("detailed_logging", DETAILED_LOGGING)
+            DEVELOPMENT_MODE = options.get("development_mode", DEVELOPMENT_MODE)
         if not os.path.exists(CONFIG_PATH):
             print("File does not exists")
             shutil.copy("www/defaultShyftConfig.json", CONFIG_PATH)
@@ -129,6 +131,9 @@ if __name__ == "__main__":
         print("Failed to load config from options.json:", e)
 
     shyft_adapter.bubble_token = SHYFT_ACCESS_KEY;
+    shyft_adapter.detailed_logging = DETAILED_LOGGING;
+    shyft_adapter.development_mode = DEVELOPMENT_MODE;
+
     homeassistant_adapter.detailed_logging = DETAILED_LOGGING
     print("TOKEN FOR HAOS_API", SUPERVISOR_TOKEN)
     print("Loaded SHYFT_ACCESS_KEY:", SHYFT_ACCESS_KEY)
