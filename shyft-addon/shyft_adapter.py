@@ -1,18 +1,21 @@
 import json
 
-from constants import BUBBLE_URI, BUBBLE_TOKEN
+from constants import BUBBLE_URI_TEST, BUBBLE_URI_PRD,  BUBBLE_TOKEN
 from homeassistant_adapter import PeriodElement
 
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Communicates with shyft on bubble
 class ShyftAdapter:
 
     def __init__(self,
-                 bubble_uri=BUBBLE_URI,
                  bubble_token=BUBBLE_TOKEN):
-        self.bubble_uri = bubble_uri
         self.bubble_token = bubble_token
+        self.detailed_logging = False
+        self.development_mode = False
 
     def send_pv_history(self,
                         pv_history: [PeriodElement]):
@@ -31,8 +34,13 @@ class ShyftAdapter:
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.bubble_token}"
             }
-            complete_uri = f"{self.bubble_uri}api/1.1/wf/{workflow_name}"
+            bubble_token_masked= f"{self.bubble_token[:6]}***{self.bubble_token[-1]}"
+            complete_uri = self._create_complete_uri(workflow_name)
+            self._log_info(f"_call_workflow uri={complete_uri}")
+            self._log_info(f"_call_workflow payload={payload}")
+            self._log_info(f"_call_workflow bubble_token_masked={bubble_token_masked}")
             response = requests.post(complete_uri, headers=headers, data=payload)
+            self._log_info("_call_workflow " + str(response))
             status_code = response.status_code
             return json.dumps({
                 "status": "success",
@@ -41,9 +49,18 @@ class ShyftAdapter:
         except Exception as e:
             return json.dumps({"status": "error", "message": str(e)})
 
+    def _create_complete_uri(self, workflow_name: str) -> str:
+        bubble_uri = BUBBLE_URI_TEST if True == self.development_mode else BUBBLE_URI_PRD
+        complete_uri = f"{bubble_uri}api/1.1/wf/{workflow_name}"
+        return complete_uri
+
     def _map_to_json(self, pv_history: [PeriodElement]):
         list_of_values = []
         for one_history_element in pv_history:
             list_of_values.append({"state": one_history_element.state,
                                    "last_changed": one_history_element.last_changed.isoformat()})
         return json.dumps({"pv_history_list": list_of_values})
+
+    def _log_info(self, log_message: str):
+        if self.detailed_logging:
+            logger.info(log_message)
