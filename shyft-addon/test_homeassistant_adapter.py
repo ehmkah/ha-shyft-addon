@@ -22,6 +22,7 @@ def test_load_entity_status():
 
 @pytest.mark.parametrize("given_input_file_name, expected_output_file_name", [
     ("shyft-addon/tests/data/entity_history_test_data_001.json", "shyft-addon/tests/data/expected_entity_history_test_data_001.json"),
+    ("shyft-addon/tests/data/entity_history_test_data_002.json", "shyft-addon/tests/data/expected_entity_history_test_data_002.json"),
 ])
 def test_map_to_period_element(given_input_file_name:str, expected_output_file_name:str):
     # given
