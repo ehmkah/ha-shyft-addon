@@ -30,7 +30,20 @@ def test_map_to_period_element():
 
 
     ## THEN
+    assert len(actual) == len(expected_periods)
     assert actual == expected_periods
+
+def test_datetime_to_bucket_time():
+    # given
+    sut = HomeAssistantAdapter(supervisor_token="xxx")
+
+    # when
+    actual = sut._map_datetime_to_bucket_time(datetime.fromisoformat("2025-12-06T20:31:00Z"))
+
+    # then
+    assert actual == datetime.fromisoformat("2025-12-06T20:20:00Z")
+
+
 
 
 def _read_to_period_element(file_path: str) -> PeriodElement:
@@ -42,5 +55,6 @@ def _read_to_period_element(file_path: str) -> PeriodElement:
         result.append(PeriodElement(state, last_changed))
 
     return result
+
 
 

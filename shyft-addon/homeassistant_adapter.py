@@ -29,10 +29,12 @@ class HomeAssistantAdapter:
 
     def __init__(self,
                  supervisor_token: str,
-                 homeassistant_uri: str = HOMEASSISTANT_URI):
+                 homeassistant_uri: str = HOMEASSISTANT_URI,
+                 bucket_size_in_minutes: int = 20):
         self.homeassistant_uri = homeassistant_uri
         self.supervisor_token = supervisor_token
         self.detailed_logging = False
+        self._bucket_size_in_minutes = bucket_size_in_minutes
 
     def load_entity_state(self,
                           sensor_id: str):
@@ -61,12 +63,17 @@ class HomeAssistantAdapter:
 
     def _map_to_period_element(self, response) -> [PeriodElement]:
         result: [PeriodElement] = []
+
         for response_entry in response:
             for one_period in response_entry:
                 state = one_period["state"]
                 last_changed = datetime.fromisoformat(one_period["last_changed"])
                 result.append(PeriodElement(state, last_changed))
         return result
+
+    def _map_datetime_to_bucket_time(self, value: datetime) -> datetime:
+        minutes_rounded = (value.minute // self._bucket_size_in_minutes) * self._bucket_size_in_minutes
+        return value.replace(minute=minutes_rounded, second=0, microsecond=0)
 
     def get_from_homeassistant(self, path):
         headers = {
