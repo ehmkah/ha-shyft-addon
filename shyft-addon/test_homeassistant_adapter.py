@@ -21,6 +21,7 @@ def test_load_entity_status():
     assert actual.unit == "°C"
 
 @pytest.mark.parametrize("given_input_file_name, expected_output_file_name", [
+    ("shyft-addon/tests/data/entity_history_test_data_004.json", "shyft-addon/tests/data/expected_entity_history_test_data_004.json"),
     ("shyft-addon/tests/data/entity_history_test_data_001.json", "shyft-addon/tests/data/expected_entity_history_test_data_001.json"),
     ("shyft-addon/tests/data/entity_history_test_data_002.json", "shyft-addon/tests/data/expected_entity_history_test_data_002.json"),
     ("shyft-addon/tests/data/entity_history_test_data_003.json", "shyft-addon/tests/data/expected_entity_history_test_data_003.json"),
@@ -56,11 +57,27 @@ def test_datetime_to_bucket_time(given_datetime, expected_datetime):
     assert actual == datetime.fromisoformat(expected_datetime)
 
 
+@pytest.mark.parametrize("given_unit_of_measurement, expected_state", [
+    ("kW", "0.1"),
+    ("W", "0.0001"),
+])
+def test_calculate_stae(given_unit_of_measurement, expected_state):
+    # given
+    sut = HomeAssistantAdapter(supervisor_token="xxx")
+
+    # when
+    actual = sut._calculate_state("0.1", given_unit_of_measurement)
+
+    # then
+    assert actual == expected_state
+
+
 
 
 def _read_to_period_element(file_path: str) -> PeriodElement:
     file_content = read_file_to_json(file_path)
     result: [PeriodElement] = []
+
     for entry in file_content:
         state = entry["state"]
         last_changed = datetime.fromisoformat(entry["last_changed"])
