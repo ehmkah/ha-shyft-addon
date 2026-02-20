@@ -11,6 +11,12 @@ class PeriodElement:
         self.state = state
         self.last_changed = last_changed
 
+    def __eq__(self, other):
+        if not isinstance(other, PeriodElement):
+            return False
+
+        return self.state == other.state and self.last_changed == other.last_changed
+
 
 class EntityState:
     def __init__(self, state: str, unit: str):
