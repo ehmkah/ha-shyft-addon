@@ -1,15 +1,34 @@
+from typing import Any
+
 from constants import HOMEASSISTANT_URI
 
 from datetime import datetime
 import requests
 import logging
 
+UNIT_OF_MEASUREMENT_W = "W"
+UNIT_OF_MEASUREMENT_KW = "kW"
+DEFAULT_UNIT_OF_MEASUREMENT = UNIT_OF_MEASUREMENT_KW
+
 logger = logging.getLogger(__name__)
+
 
 class PeriodElement:
     def __init__(self, state: str, last_changed: datetime):
         self.state = state
         self.last_changed = last_changed
+
+    def __eq__(self, other):
+        if not isinstance(other, PeriodElement):
+            return False
+
+        return self.state == other.state and self.last_changed == other.last_changed
+
+    def __str__(self):
+        return f"{self.state} {self.last_changed}"
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class EntityState:
@@ -23,10 +42,12 @@ class HomeAssistantAdapter:
 
     def __init__(self,
                  supervisor_token: str,
-                 homeassistant_uri: str = HOMEASSISTANT_URI):
+                 homeassistant_uri: str = HOMEASSISTANT_URI,
+                 bucket_size_in_minutes: int = 20):
         self.homeassistant_uri = homeassistant_uri
         self.supervisor_token = supervisor_token
         self.detailed_logging = False
+        self._bucket_size_in_minutes = bucket_size_in_minutes
 
     def load_entity_state(self,
                           sensor_id: str):
@@ -54,13 +75,38 @@ class HomeAssistantAdapter:
             logger.info(log_message)
 
     def _map_to_period_element(self, response) -> [PeriodElement]:
-        result: [PeriodElement] = []
+        time_buckets = {}
+        first_entry = response[0]
+        unit = DEFAULT_UNIT_OF_MEASUREMENT
+        try:
+            unit = response[0][0]['attributes']['unit_of_measurement']
+        except (IndexError, KeyError, TypeError):
+            # silent skip. if nothing can be found then we use kw
+            self._log_info("Attention! It was not possible to read the unit_of_measurement. kW is assumed")
+            pass
         for response_entry in response:
             for one_period in response_entry:
                 state = one_period["state"]
                 last_changed = datetime.fromisoformat(one_period["last_changed"])
-                result.append(PeriodElement(state, last_changed))
-        return result
+                last_changed_bucket = self._map_datetime_to_bucket_time(last_changed)
+                if last_changed_bucket not in time_buckets:
+                    time_buckets[last_changed_bucket] = PeriodElement(self._calculate_state(state, unit),
+                                                                      last_changed_bucket)
+
+        return list(time_buckets.values())
+
+    def _calculate_state(self, state: str, unit: str) -> Any:
+        try:
+            if (unit == UNIT_OF_MEASUREMENT_W):
+                return f"{float(state) / 1000:.4f}"
+            return state
+        except (ValueError, TypeError):
+            # Fallback if state is None, "unknown", or not a number
+            return state
+
+    def _map_datetime_to_bucket_time(self, value: datetime) -> datetime:
+        minutes_rounded = (value.minute // self._bucket_size_in_minutes) * self._bucket_size_in_minutes
+        return value.replace(minute=minutes_rounded, second=0, microsecond=0)
 
     def get_from_homeassistant(self, path):
         headers = {

@@ -1,0 +1,3 @@
+== 0.0.14.0
+
+* KAN-163 : Filter pv history values better (two values for one hour)
