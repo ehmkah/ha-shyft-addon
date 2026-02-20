@@ -20,12 +20,15 @@ def test_load_entity_status():
     assert actual.state == "10"
     assert actual.unit == "°C"
 
-def test_map_to_period_element():
+@pytest.mark.parametrize("given_input_file_name, expected_output_file_name", [
+    ("shyft-addon/tests/data/entity_history_test_data_001.json", "shyft-addon/tests/data/expected_entity_history_test_data_001.json"),
+])
+def test_map_to_period_element(given_input_file_name:str, expected_output_file_name:str):
     # given
     sut = HomeAssistantAdapter(
         supervisor_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlOGQyNjEwZmMwOWQ0MzY3OTQ5YzcyZDc4ZjA2MzliMyIsImlhdCI6MTc2MDA5Njc2NiwiZXhwIjoyMDc1NDU2NzY2fQ.uzrb_9GI--oKn6Wt6Oopz-lweUWXV0Q4ABbwxmAiiJo")
-    given_period_element = read_file_to_json("shyft-addon/tests/data/entity_history_test_data_001.json")
-    expected_periods = _read_to_period_element("shyft-addon/tests/data/expected_entity_history_test_data_001.json")
+    given_period_element = read_file_to_json(given_input_file_name)
+    expected_periods = _read_to_period_element(expected_output_file_name)
 
     # WHEN
     actual = sut._map_to_period_element(given_period_element)
