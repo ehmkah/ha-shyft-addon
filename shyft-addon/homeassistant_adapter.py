@@ -17,6 +17,9 @@ class PeriodElement:
 
         return self.state == other.state and self.last_changed == other.last_changed
 
+    def __str__(self):
+        return f"{self.state} {self.last_changed}"
+
 
 class EntityState:
     def __init__(self, state: str, unit: str):
@@ -62,14 +65,17 @@ class HomeAssistantAdapter:
             logger.info(log_message)
 
     def _map_to_period_element(self, response) -> [PeriodElement]:
-        result: [PeriodElement] = []
-
+        time_buckets = {}
         for response_entry in response:
             for one_period in response_entry:
                 state = one_period["state"]
                 last_changed = datetime.fromisoformat(one_period["last_changed"])
-                result.append(PeriodElement(state, last_changed))
-        return result
+                last_changed_bucket = self._map_datetime_to_bucket_time(last_changed)
+                if last_changed_bucket not in time_buckets:
+                    time_buckets[last_changed_bucket] = PeriodElement(state, last_changed_bucket)
+
+
+        return list(time_buckets.values())
 
     def _map_datetime_to_bucket_time(self, value: datetime) -> datetime:
         minutes_rounded = (value.minute // self._bucket_size_in_minutes) * self._bucket_size_in_minutes

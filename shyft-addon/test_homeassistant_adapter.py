@@ -3,6 +3,8 @@ from homeassistant_adapter import HomeAssistantAdapter, PeriodElement
 from datetime import datetime
 from file_utils import read_file_to_json
 
+import pytest
+
 def test_load_entity_history():
     sut = HomeAssistantAdapter(supervisor_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlOGQyNjEwZmMwOWQ0MzY3OTQ5YzcyZDc4ZjA2MzliMyIsImlhdCI6MTc2MDA5Njc2NiwiZXhwIjoyMDc1NDU2NzY2fQ.uzrb_9GI--oKn6Wt6Oopz-lweUWXV0Q4ABbwxmAiiJo")
     actual: [PeriodElement] = sut.load_entity_history("sensor.heatpump_mock_the_sensor_mock",
@@ -33,15 +35,20 @@ def test_map_to_period_element():
     assert len(actual) == len(expected_periods)
     assert actual == expected_periods
 
-def test_datetime_to_bucket_time():
+@pytest.mark.parametrize("given_datetime, expected_datetime", [
+    ("2025-12-06T20:31:00Z", "2025-12-06T20:20:00Z"),
+    ("2025-12-06T20:31:00Z", "2025-12-06T20:20:00Z"),
+    ("2025-12-06T20:31:00.1234Z", "2025-12-06T20:20:00Z"),
+])
+def test_datetime_to_bucket_time(given_datetime, expected_datetime):
     # given
     sut = HomeAssistantAdapter(supervisor_token="xxx")
 
     # when
-    actual = sut._map_datetime_to_bucket_time(datetime.fromisoformat("2025-12-06T20:31:00Z"))
+    actual = sut._map_datetime_to_bucket_time(datetime.fromisoformat(given_datetime))
 
     # then
-    assert actual == datetime.fromisoformat("2025-12-06T20:20:00Z")
+    assert actual == datetime.fromisoformat(expected_datetime)
 
 
 
